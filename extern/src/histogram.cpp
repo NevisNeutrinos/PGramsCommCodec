@@ -4,7 +4,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> // Needed for automatic vector conversions
-#include "../../src/metrics.h"
+#include "../../include/metrics.h"
 
 namespace py = pybind11;
 

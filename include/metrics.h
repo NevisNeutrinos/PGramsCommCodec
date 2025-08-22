@@ -137,14 +137,61 @@ struct Histogram {
     }
 };
 
-struct TPCMonitor {
-    bool low_bandwith_mode_ = false;
+struct LowBwTpcMonitor {
 
     int32_t num_fems;
     int32_t num_charge_channels;
     int32_t num_light_channels;
 
     std::vector<int32_t> charge_channel_num_samples = std::vector<int32_t>(NUM_CHARGE_CHANNELS,0);
+
+    void clear() {
+        num_fems = 0;
+        num_charge_channels = 0;
+        num_light_channels = 0;
+        for (auto &ch : charge_channel_num_samples) ch = 0;
+    }
+
+    std::vector<int32_t> serialize() const {
+        // Start with the configuration metadata
+        std::vector<int32_t> serialized_data = {
+            num_fems,
+            num_charge_channels,
+            num_light_channels
+        };
+
+        serialized_data.insert(serialized_data.end(),
+                            charge_channel_num_samples.begin(),
+                             charge_channel_num_samples.end());
+
+        return serialized_data;
+    }
+
+    static LowBwTpcMonitor deserialize(const std::vector<int32_t>& data) {
+
+        LowBwTpcMonitor metrics{};
+        size_t word_count = 0;
+        metrics.num_fems = data.at(word_count++);
+        metrics.num_charge_channels = data.at(word_count++);
+        metrics.num_light_channels = data.at(word_count++);
+
+        return metrics;
+    }
+
+    void print () const {
+        std::cout << "+++++++++++++++++++++++++++++++++++++++++ \n"
+                  << "  num_fems: " << num_fems << "\n"
+                  << "  num_charge_channels: " << num_charge_channels << "\n"
+                  << "  num_light_channels: " << num_light_channels << "\n";
+        for (const auto &nsamples : charge_channel_num_samples) { std::cout << nsamples << ","; }
+        std::cout << "\n"
+        << "+++++++++++++++++++++++++++++++++++++++++"
+        << std::endl;
+    }
+};
+
+struct TpcMonitor {
+
     std::vector<Histogram> charge_histograms{NUM_CHARGE_CHANNELS, Histogram(1024,4096,CHARGE_BINS)};
     std::vector<Histogram> light_histograms{NUM_LIGHT_CHANNELS, Histogram(1596,4096,LIGHT_BINS)};
 
@@ -167,36 +214,21 @@ struct TPCMonitor {
     }
 
     void clear() {
-        num_fems = 0;
-        num_charge_channels = 0;
-        num_light_channels = 0;
-        for (auto &ch : charge_channel_num_samples) ch = 0;
         for (auto &hist : charge_histograms) hist.clear();
         for (auto &hist : light_histograms) hist.clear();
     }
 
     std::vector<int32_t> serialize() const {
-        // Start with the configuration metadata
-        std::vector<int32_t> serialized_data = {
-            num_fems,
-            num_charge_channels,
-            num_light_channels
-        };
 
-        serialized_data.insert(serialized_data.end(),
-                            charge_channel_num_samples.begin(),
-                             charge_channel_num_samples.end());
+        std::vector<int32_t> serialized_data;
 
-
-        if (!low_bandwith_mode_ && !charge_histograms.empty()) {
-            for (const auto& hist : charge_histograms) {
-                auto tmp = hist.serialize();
-                serialized_data.insert(serialized_data.end(), tmp.begin(),tmp.end());
-            }
-            for (const auto& hist : light_histograms) {
-                auto tmp = hist.serialize();
-                serialized_data.insert(serialized_data.end(), tmp.begin(),tmp.end());
-            }
+        for (const auto& hist : charge_histograms) {
+            auto tmp = hist.serialize();
+            serialized_data.insert(serialized_data.end(), tmp.begin(),tmp.end());
+        }
+        for (const auto& hist : light_histograms) {
+            auto tmp = hist.serialize();
+            serialized_data.insert(serialized_data.end(), tmp.begin(),tmp.end());
         }
 
         return serialized_data;
@@ -210,19 +242,12 @@ struct TPCMonitor {
         }
     }
 
-    static TPCMonitor deserialize(const std::vector<int32_t>& data) {
+    static TpcMonitor deserialize(const std::vector<int32_t>& data) {
 
-        TPCMonitor metrics{};
-        size_t word_count = 0;
-        metrics.num_fems = data.at(word_count++);
-        metrics.num_charge_channels = data.at(word_count++);
-        metrics.num_light_channels = data.at(word_count++);
-
-        // If     low bandwidth mdoe this should be all the data
-        if (metrics.low_bandwith_mode_) return metrics;
+        TpcMonitor metrics{};
 
         // Get the data iteraterator position so we can use it to decode the histograms
-        auto it = data.begin() + word_count;
+        auto it = data.begin();
         deserialize_hist(it, metrics.charge_histograms, CHARGE_BINS+5, NUM_CHARGE_CHANNELS);
         deserialize_hist(it, metrics.light_histograms, LIGHT_BINS+5, NUM_LIGHT_CHANNELS);
 
@@ -230,12 +255,7 @@ struct TPCMonitor {
     }
 
     void print () const {
-        std::cout << "+++++++++++++++++++++++++++++++++++++++++ \n"
-                  << "  num_fems: " << num_fems << "\n"
-                  << "  num_charge_channels: " << num_charge_channels << "\n"
-                  << "  num_light_channels: " << num_light_channels << "\n";
-        for (const auto &nsamples : charge_channel_num_samples) { std::cout << nsamples << ","; }
-        std::cout << "\n";
+        std::cout << "+++++++++++++++++++++++++++++++++++++++++ \n";
         charge_histograms.at(0).print();
         light_histograms.at(0).print();
         std::cout << "\n"

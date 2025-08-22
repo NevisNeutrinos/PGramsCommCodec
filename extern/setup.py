@@ -19,7 +19,15 @@ ext_modules = [
         extra_compile_args=["-std=c++11"],
         language='c++',
     ),
+    # Third module: low_bw_tpc_monitor_module
+    Pybind11Extension(
+        "low_bw_tpc_monitor_module",
+        ["src/low_bw_tpc_monitor.cpp"], # Source file for this module
+        extra_compile_args=["-std=c++11"],
+        language='c++',
+    ),
 ]
+
 
 setup(
     name="codec_module",

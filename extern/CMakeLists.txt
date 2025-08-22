@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(pybind11 CONFIG REQUIRED)
 #add_subdirectory(extern/pybind11)
-include_directories(../src)
+include_directories(../include)
 pybind11_add_module(codec_bindings
                     src/tpc_monitor.cpp)
 
