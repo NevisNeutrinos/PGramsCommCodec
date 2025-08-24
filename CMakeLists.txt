@@ -1,14 +1,28 @@
 cmake_minimum_required(VERSION 3.15)
-project(pgrams_codec)
+project(DataMonProject)
 
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# This allows a parent CMake to overide the value defined here
-option(USE_PYTHON TRUE)
-message(STATUS "SET PYTHON TO ${USE_PYTHON}")
+# Add the pybind11 subdirectory
+add_subdirectory(extern/pybind11)
 
-if(USE_PYTHON)
-    message(STATUS "Compiling codec with python bindings..")
-else()
-    message(STATUS "No Codec python bindings, use as C++ headers only..")
-endif ()
+# Define our C++ library source files
+set(LIB_SOURCES
+        src/histogram.cpp
+        src/tpc_monitor.cpp
+        src/tpc_monitor_lbw.cpp
+)
+
+# Create a static library for our core C++ code.
+# This avoids compiling the same code twice.
+add_library(datamon_core STATIC ${LIB_SOURCES})
+target_include_directories(datamon_core PUBLIC include)
+
+# Create the Python module using pybind11
+# The first argument 'datamon' is the name of the module you will import in Python.
+pybind11_add_module(datamon bindings/metric_bindings.cpp)
+
+# Link our core library to the Python module
+target_link_libraries(datamon PRIVATE datamon_core)
