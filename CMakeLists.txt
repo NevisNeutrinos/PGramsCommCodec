@@ -17,7 +17,7 @@ set(LIB_SOURCES
 
 # Create a static library for our core C++ code.
 # This avoids compiling the same code twice.
-add_library(datamon_core STATIC ${LIB_SOURCES})
+add_library(datamon_core SHARED ${LIB_SOURCES})
 target_include_directories(datamon_core PUBLIC include)
 
 # Create the Python module using pybind11

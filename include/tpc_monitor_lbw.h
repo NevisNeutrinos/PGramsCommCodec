@@ -25,9 +25,9 @@ public:
     void setNumFems(int32_t count) { num_fems = count; }
     void setNumChargeChannels(int32_t count) { num_charge_channels = count; }
     void setNumLightChannels(int32_t count) { num_light_channels = count; }
-    void setChargeChannelSamples(size_t index, int32_t samples) {
-        if (index < charge_channel_num_samples.size()) {
-            charge_channel_num_samples[index] = samples;
+    void setChargeChannelSamples(size_t channel, int32_t samples) {
+        if (channel < charge_channel_num_samples.size()) {
+            charge_channel_num_samples.at(channel) = samples;
         }
     }
 
@@ -36,6 +36,7 @@ public:
     int32_t getNumChargeChannels() const { return num_charge_channels; }
     int32_t getNumLightChannels() const { return num_light_channels; }
     const std::vector<int32_t>& getChargeChannelNumSamples() const { return charge_channel_num_samples; }
+
 
     // ISerializable interface implementation
     std::vector<int32_t> serialize() const override;
