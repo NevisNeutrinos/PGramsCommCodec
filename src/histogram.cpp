@@ -97,6 +97,21 @@ std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>
     return it;
 }
 
+#ifdef USE_PYTHON
+    py::dict Histogram::getMetricDict() {
+
+        py::dict metric_dict;
+        metric_dict["min_value"] = min_value;
+        metric_dict["max_value"] = max_value;
+        metric_dict["num_bins"] = num_bins;
+        metric_dict["below_range_count"] = below_range_count;
+        metric_dict["above_range_count"] = above_range_count;
+        metric_dict["bins"] = vector_to_numpy_array_1d(bins);
+
+        return metric_dict;
+    }
+#endif
+
 void Histogram::print() const {
     std::cout << "--- Histogram ---" << std::endl;
     std::cout << "Range: [" << min_value << ", " << max_value << "), Bins: " << num_bins << std::endl;

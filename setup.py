@@ -13,8 +13,10 @@ ext_modules = [
     Pybind11Extension(
         "datamon",  # Name of the module in Python
         sources,
+        include_dirs=['include'],
         # Define the C++ standard to use
         cxx_std=17,
+        define_macros=[('USE_PYTHON', '1')]
     ),
 ]
 

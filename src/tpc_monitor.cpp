@@ -43,6 +43,27 @@ std::vector<int32_t>::const_iterator TpcMonitor::deserialize(std::vector<int32_t
     return it;
 }
 
+#ifdef USE_PYTHON
+py::dict TpcMonitor::getMetricDict() {
+
+    py::dict metric_dict;
+    py::list charge_hist_list;
+    py::list light_hist_list;
+
+    for (auto& hist : charge_histograms) {
+        charge_hist_list.append(hist.getMetricDict());
+    }
+    for (auto& hist : light_histograms) {
+        light_hist_list.append(hist.getMetricDict());
+    }
+
+    metric_dict["charge_hists"] = charge_hist_list;
+    metric_dict["light_hists"] = light_hist_list;
+
+    return metric_dict;
+}
+#endif
+
 void TpcMonitor::print() const {
     std::cout << "++++++++++++++++ TpcMonitor ++++++++++++++++" << std::endl;
     std::cout << "Showing first charge histogram:" << std::endl;

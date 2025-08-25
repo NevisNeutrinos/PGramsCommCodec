@@ -55,6 +55,19 @@ std::vector<int32_t>::const_iterator LowBwTpcMonitor::deserialize(std::vector<in
     return it;
 }
 
+#ifdef USE_PYTHON
+py::dict LowBwTpcMonitor::getMetricDict() {
+
+    py::dict metric_dict;
+    metric_dict["num_fems"] = num_fems;
+    metric_dict["num_charge_channels"] = num_charge_channels;
+    metric_dict["num_light_channels"] = num_light_channels;
+    metric_dict["charge_channel_num_samples"] = vector_to_numpy_array_1d(charge_channel_num_samples);
+
+    return metric_dict;
+}
+#endif
+
 void LowBwTpcMonitor::print() const {
     std::cout << "++++++++++++ LowBwTpcMonitor +++++++++++++" << std::endl;
     std::cout << "  num_fems: " << num_fems << std::endl;

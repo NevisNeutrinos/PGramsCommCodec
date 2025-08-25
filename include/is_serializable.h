@@ -8,6 +8,13 @@
 #include <vector>
 #include <cstdint>
 
+#ifdef USE_PYTHON
+    #include <pybind11/pybind11.h>
+    #include <pybind11/numpy.h>
+
+    namespace py = pybind11;
+#endif
+
 // This is the core interface for all serializable objects.
 
 class ISerializable {
@@ -46,6 +53,24 @@ public:
     void deserialize(const std::vector<int32_t>& data) {
         deserialize(data.begin(), data.end());
     }
+
+#ifdef USE_PYTHON
+    /**
+    * @brief Get a map of the metrics with a key giving the name and value giving the metric
+    * @return The std::map is converted to a python dictionary holding the metrics
+    */
+    virtual py::dict getMetricDict() = 0;
+
+    /**
+    * @brief Convert a std::vector to a numpy array
+    * @return Return  a numpy array
+    */
+    template <typename T>
+    static py::array_t<T> vector_to_numpy_array_1d(const std::vector<T>& vec) {
+        return py::array_t(vec.size(), vec.data());
+    }
+#endif
+
 };
 
 #endif //IS_SERIALIZABLE_H

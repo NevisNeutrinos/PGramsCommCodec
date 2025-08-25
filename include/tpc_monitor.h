@@ -27,6 +27,10 @@ public:
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;
+#ifdef USE_PYTHON
+    py::dict getMetricDict() override;
+#endif
+
 };
 
 #endif //TPC_MONITOR_H

@@ -6,7 +6,6 @@
 #define TPC_MONITOR_LBW_H
 
 #include "is_serializable.h"
-#include "histogram.h"
 
 class LowBwTpcMonitor : public ISerializable {
 private:
@@ -37,11 +36,15 @@ public:
     int32_t getNumLightChannels() const { return num_light_channels; }
     const std::vector<int32_t>& getChargeChannelNumSamples() const { return charge_channel_num_samples; }
 
-
     // ISerializable interface implementation
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;
+
+#ifdef USE_PYTHON
+    py::dict getMetricDict() override;
+#endif
+
 };
 
 #endif //TPC_MONITOR_LBW_H
