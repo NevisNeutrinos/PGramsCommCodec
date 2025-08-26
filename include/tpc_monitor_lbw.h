@@ -5,9 +5,9 @@
 #ifndef TPC_MONITOR_LBW_H
 #define TPC_MONITOR_LBW_H
 
-#include "is_serializable.h"
+#include "metric_base.h"
 
-class LowBwTpcMonitor : public ISerializable {
+class LowBwTpcMonitor : public MetricBase {
 private:
     int32_t num_fems;
     int32_t num_charge_channels;
@@ -36,7 +36,7 @@ public:
     int32_t getNumLightChannels() const { return num_light_channels; }
     const std::vector<int32_t>& getChargeChannelNumSamples() const { return charge_channel_num_samples; }
 
-    // ISerializable interface implementation
+    // MetricBase interface implementation
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;

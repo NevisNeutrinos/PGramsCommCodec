@@ -5,9 +5,9 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include "is_serializable.h"
+#include "metric_base.h"
 
-class Histogram : public ISerializable {
+class Histogram : public MetricBase {
 private:
     // Configuration
     int32_t min_value;
@@ -39,7 +39,7 @@ public:
     int32_t getBelowRangeCount() const { return below_range_count; }
     int32_t getAboveRangeCount() const { return above_range_count; }
 
-    // ISerializable interface implementation
+    // MetricBase interface implementation
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;

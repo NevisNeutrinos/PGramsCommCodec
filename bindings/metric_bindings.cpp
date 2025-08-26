@@ -4,7 +4,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> // Needed for automatic vector conversion
-#include "../include/is_serializable.h"
+#include "../include/metric_base.h"
 #include "../include/histogram.h"
 #include "../include/tpc_monitor.h"
 #include "../include/tpc_monitor_lbw.h"
@@ -13,15 +13,15 @@ namespace py = pybind11;
 
 // A trampoline class is needed for pybind11 to handle virtual functions
 // that might be overridden in Python.
-class PyMetricBase : public ISerializable {
+class PyMetricBase : public MetricBase {
 public:
     // Inherit constructors
-    using ISerializable::ISerializable;
+    using MetricBase::MetricBase;
 
     std::vector<int32_t> serialize() const override {
         PYBIND11_OVERRIDE_PURE(
             std::vector<int32_t>, /* Return type */
-            ISerializable,        /* Parent class */
+            MetricBase,        /* Parent class */
             serialize             /* Function name */
         );
     }
@@ -32,7 +32,7 @@ public:
         std::vector<int32_t>::const_iterator end) override {
         PYBIND11_OVERRIDE_PURE(
             std::vector<int32_t>::const_iterator, /* Return type */
-            ISerializable,                           /* Parent class */
+            MetricBase,                           /* Parent class */
             deserialize,                          /* Function name */
             begin, end                            /* Arguments */
         );
@@ -42,7 +42,7 @@ public:
     py::dict getMetricDict() override {
         PYBIND11_OVERRIDE_PURE(
             py::dict,       /* Return type */
-            ISerializable,     /* Parent class */
+            MetricBase,     /* Parent class */
             getMetricDict  /* Function name */
         );
     }
@@ -55,15 +55,15 @@ PYBIND11_MODULE(datamon, m) {
 
     // We don't define a constructor (.def(py::init<>())) because it's an abstract interface.
     // This just makes pybind11 aware of the type so derived classes can use it.
-    // py::class_<ISerializable>(m, "ISerializable");
-    py::class_<ISerializable, PyMetricBase /* trampoline */>(m, "ISerializable")
+    // py::class_<MetricBase>(m, "MetricBase");
+    py::class_<MetricBase, PyMetricBase /* trampoline */>(m, "MetricBase")
         .def(py::init<>())
-        .def("deserialize", static_cast<void (ISerializable::*)(const std::vector<int32_t>&)>(&ISerializable::deserialize), "Deserialize data from a list of integers.")
-        .def("get_metric_dict", &ISerializable::getMetricDict, "Deserialize data and return a dictionary.");
+        .def("deserialize", static_cast<void (MetricBase::*)(const std::vector<int32_t>&)>(&MetricBase::deserialize), "Deserialize data from a list of integers.")
+        .def("get_metric_dict", &MetricBase::getMetricDict, "Deserialize data and return a dictionary.");
 
 
     // Bind the Histogram class
-    py::class_<Histogram, ISerializable>(m, "Histogram")
+    py::class_<Histogram, MetricBase>(m, "Histogram")
         .def(py::init<>()) // Bind the default constructor
         .def(py::init<int32_t, int32_t, int32_t>()) // Bind the parameterized constructor
         .def("fill", &Histogram::fill, "Fill the histogram with a value")
@@ -71,7 +71,7 @@ PYBIND11_MODULE(datamon, m) {
         .def("serialize", &Histogram::serialize, "Serialize the histogram to a list of ints")
 //        .def("deserialize", &Histogram::deserialize, py::arg("data"), "Deserialize from a list of ints");
         // .def("deserialize", [](Histogram &self, const std::vector<int32_t> &data) {
-        //       self.ISerializable::deserialize(data);
+        //       self.MetricBase::deserialize(data);
         // }, "Deserialize from a list of ints", py::arg("data"))
         // .def("get_metric_dict", &Histogram::getMetricDict, "Get the metric dictionary")
         .def_property_readonly("min_value", &Histogram::getMinValue)
@@ -82,12 +82,12 @@ PYBIND11_MODULE(datamon, m) {
         .def_property_readonly("above_range_count", &Histogram::getAboveRangeCount);
 
     // Bind the TpcMonitor class
-    py::class_<TpcMonitor, ISerializable>(m, "TpcMonitor")
+    py::class_<TpcMonitor, MetricBase>(m, "TpcMonitor")
         .def(py::init<>())
         .def("clear", &TpcMonitor::clear)
         .def("serialize", &TpcMonitor::serialize)
         // .def("deserialize", [](TpcMonitor &self, const std::vector<int32_t> &data) {
-        //     self.ISerializable::deserialize(data);
+        //     self.MetricBase::deserialize(data);
         //  }, "Deserialize from a list of ints", py::arg("data"))
         // .def("get_metric_dict", &TpcMonitor::getMetricDict, "Get the metric dictionary")
 
@@ -96,12 +96,12 @@ PYBIND11_MODULE(datamon, m) {
         .def_property_readonly("light_histograms", &TpcMonitor::getLightHistograms);
 
     // Bind the LowBwTpcMonitor class
-    py::class_<LowBwTpcMonitor, ISerializable>(m, "LowBwTpcMonitor")
+    py::class_<LowBwTpcMonitor, MetricBase>(m, "LowBwTpcMonitor")
         .def(py::init<>())
         .def("clear", &LowBwTpcMonitor::clear)
         .def("serialize", &LowBwTpcMonitor::serialize)
         // .def("deserialize", [](LowBwTpcMonitor &self, const std::vector<int32_t> &data) {
-        //     self.ISerializable::deserialize(data);
+        //     self.MetricBase::deserialize(data);
         // }, "Deserialize from a list of ints", py::arg("data"))
         // .def("get_metric_dict", &LowBwTpcMonitor::getMetricDict, "Get the metric dictionary")
         .def("set_num_fems", &LowBwTpcMonitor::setNumFems)

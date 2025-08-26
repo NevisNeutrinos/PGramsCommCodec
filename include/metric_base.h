@@ -2,8 +2,8 @@
 // Created by Jon Sensenig on 8/23/25.
 //
 
-#ifndef IS_SERIALIZABLE_H
-#define IS_SERIALIZABLE_H
+#ifndef METRIC_BASE_H
+#define METRIC_BASE_H
 
 #include <vector>
 #include <cstdint>
@@ -17,7 +17,7 @@
 
 // This is the core interface for all serializable objects.
 
-class ISerializable {
+class MetricBase {
 public:
 
     // Central location for fixed constants.
@@ -27,7 +27,7 @@ public:
     constexpr static size_t LIGHT_BINS = 20;
 
     // Virtual destructor is essential for a polymorphic base class.
-    virtual ~ISerializable() = default;
+    virtual ~MetricBase() = default;
 
     /**
      * @brief Serializes the object's state into a vector of 32-bit integers.
@@ -73,4 +73,4 @@ public:
 
 };
 
-#endif //IS_SERIALIZABLE_H
+#endif //METRIC_BASE_H
