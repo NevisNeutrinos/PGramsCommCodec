@@ -12,6 +12,17 @@ class TpcMonitor : public MetricBase {
 private:
     std::vector<Histogram> charge_histograms;
     std::vector<Histogram> light_histograms;
+    std::vector<int32_t> channel_mean;
+    std::vector<int32_t> channel_stddev;
+
+    // // Implement  the serialize/deserialize
+    // auto member_tuple_ = std::tie(charge_histograms, light_histograms, channel_mean, channel_stddev);
+    // auto member_tuple() override {
+    //     return member_tuple_;
+    // };
+    // auto member_tuple() const override {
+    //     return member_tuple_;
+    // };
 
 public:
     TpcMonitor();
@@ -23,7 +34,8 @@ public:
     const void fillChargeChannelHistogram(size_t channel, int32_t word) { charge_histograms.at(channel).fill(word); };
     const void fillLightChannelHistogram(size_t channel, int32_t word) { light_histograms.at(channel).fill(word); };
 
-    // MetricBase interface implementation
+    // MetricBase serialize interface implementation
+    // size_t get_metric_size() const override { return Histogram::get_metric_size() + NUM_CHARGE_CHANNELS + NUM_CHARGE_CHANNELS; };
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;

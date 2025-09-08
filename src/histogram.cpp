@@ -44,18 +44,31 @@ void Histogram::clear() {
     above_range_count = 0;
 }
 
+// std::vector<int32_t> Histogram::serialize() const {
+//     std::vector<int32_t> serialized_data;
+//     // Reserve space for efficiency
+//     serialized_data.reserve(5 + bins.size());
+//
+//     // Metadata
+//     serialized_data.push_back(min_value);
+//     serialized_data.push_back(max_value);
+//     serialized_data.push_back(num_bins);
+//     serialized_data.push_back(below_range_count);
+//     serialized_data.push_back(above_range_count);
+//
+//     // Bin data
+//     serialized_data.insert(serialized_data.end(), bins.begin(), bins.end());
+//     return serialized_data;
+// }
+
 std::vector<int32_t> Histogram::serialize() const {
     std::vector<int32_t> serialized_data;
     // Reserve space for efficiency
-    serialized_data.reserve(5 + bins.size());
+    serialized_data.reserve(num_members_ + bins.size());
 
-    // Metadata
-    serialized_data.push_back(min_value);
-    serialized_data.push_back(max_value);
-    serialized_data.push_back(num_bins);
-    serialized_data.push_back(below_range_count);
-    serialized_data.push_back(above_range_count);
-
+    // Serialize the histogram metadata
+    auto data = Serializer<Histogram>::serialize_tuple(member_tuple());
+    serialized_data.insert(serialized_data.end(), data.begin(), data.end());
     // Bin data
     serialized_data.insert(serialized_data.end(), bins.begin(), bins.end());
     return serialized_data;
@@ -63,19 +76,8 @@ std::vector<int32_t> Histogram::serialize() const {
 
 std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>::const_iterator begin,
                                                             std::vector<int32_t>::const_iterator end) {
-    // Use an iterator to read data, which is much safer than indexing.
-    auto it = begin;
 
-    // Ensure there's enough data for metadata
-    if (std::distance(it, end) < 5) {
-        throw std::runtime_error("Deserialization failed: not enough data for Histogram metadata.");
-    }
-
-    min_value = *it++;
-    max_value = *it++;
-    num_bins = *it++;
-    below_range_count = *it++;
-    above_range_count = *it++;
+    it = Serializer<Histogram>::deserialize_tuple(member_tuple(), begin, end);
 
     // Re-initialize the histogram's structure based on deserialized metadata
     if (max_value <= min_value || num_bins <= 0) {
@@ -93,7 +95,6 @@ std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>
     std::copy(it, it + num_bins, bins.begin());
     it += num_bins;
 
-    // Return the iterator pointing to the next piece of data
     return it;
 }
 

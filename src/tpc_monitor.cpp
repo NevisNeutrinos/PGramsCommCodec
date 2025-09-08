@@ -27,6 +27,8 @@ std::vector<int32_t> TpcMonitor::serialize() const {
         auto hist_data = hist.serialize();
         serialized_data.insert(serialized_data.end(), hist_data.begin(), hist_data.end());
     }
+    serialized_data.insert(serialized_data.end(), channel_mean.begin(), channel_mean.end());
+    serialized_data.insert(serialized_data.end(), channel_stddev.begin(), channel_stddev.end());
     return serialized_data;
 }
 
@@ -40,6 +42,13 @@ std::vector<int32_t>::const_iterator TpcMonitor::deserialize(std::vector<int32_t
     for (auto& hist : light_histograms) {
         it = hist.deserialize(it, end);
     }
+
+    // Copy charge channel mean/stddev data
+    std::copy(it, it + NUM_CHARGE_CHANNELS, channel_mean.begin());
+    it += NUM_CHARGE_CHANNELS;
+    std::copy(it, it + NUM_CHARGE_CHANNELS, channel_stddev.begin());
+    it += NUM_CHARGE_CHANNELS;
+
     return it;
 }
 
@@ -59,6 +68,9 @@ py::dict TpcMonitor::getMetricDict() {
 
     metric_dict["charge_hists"] = charge_hist_list;
     metric_dict["light_hists"] = light_hist_list;
+
+    metric_dict["charge_channel_mean"] = vector_to_numpy_array_1d(channel_mean);
+    metric_dict["charge_channel_stddev"] = vector_to_numpy_array_1d(channel_stddev);
 
     return metric_dict;
 }

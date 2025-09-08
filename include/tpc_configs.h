@@ -1,0 +1,123 @@
+//
+// Created by Jon Sensenig on 8/23/25.
+//
+
+#ifndef TPC_CONFIGS_H
+#define TPC_CONFIGS_H
+
+#include "metric_base.h"
+#include <vector>
+
+class TpcConfigs : public MetricBase {
+private:
+
+    /*
+    * Note: We only use the Cosmic multiplicity and summed amplitude.
+    *       This is the case since the other types require additional
+    *       conditions such as a beam gate.
+    */
+
+    // Configuration parameters ot be set from the ground
+    int32_t summed_peak_thresh_;    // Summed peak ampltitudes of 5 adjacent channels
+    int32_t channel_multiplicity_;  // Number of 5 adjacent channels above Disc 1 threshold
+    int32_t roi_delay_0_;           // Number of samples to shift the waveforms to perform the subtraction
+    int32_t roi_delay_1_;           // ?
+    int32_t roi_precount_;          // number of samples before disc. 0 threshold to include in the ROI
+    int32_t roi_peak_window_;       // pmt_width, window where the waveform peak is found
+    uint32_t enable_top_ = 0x0;            // Enable mask for channels on top connector
+    uint32_t enable_middle_ = 0x0;         // Enable mask for channels on middle connector
+    uint32_t enable_bottom_ = 0xFFFF;      // Enable mask for channels on bottom connector
+    std::vector<int32_t> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
+    std::vector<int32_t> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
+    int32_t num_roi_words_ = 30;    // Number of samples in the ROI
+    int32_t roi_deadtime_ = 240;    // The number of samples after the ROI which are an enforced deadtime
+    // Won't use these
+    std::vector<int32_t> disc_threshold_3_;
+    std::vector<int32_t> disc_threshold_4_;
+    int32_t pmt_gate_size_ = 750;
+    int32_t pmt_beam_size_ = 200;
+
+    int32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
+
+public:
+    TpcConfigs();
+
+    void clear();
+    void print() const;
+
+    // MetricBase interface implementation
+    std::vector<int32_t> serialize() const override;
+    std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
+                                                     std::vector<int32_t>::const_iterator end) override;
+#ifdef USE_PYTHON
+    py::dict getMetricDict() override;
+#endif
+
+    // ===== Getters & Setters =====
+
+    // Scalars
+    int32_t getSummedPeakThresh() const { return summed_peak_thresh_; }
+    void setSummedPeakThresh(int32_t v) { summed_peak_thresh_ = v; }
+
+    int32_t getChannelMultiplicity() const { return channel_multiplicity_; }
+    void setChannelMultiplicity(int32_t v) { channel_multiplicity_ = v; }
+
+    int32_t getRoiDelay0() const { return roi_delay_0_; }
+    void setRoiDelay0(int32_t v) { roi_delay_0_ = v; }
+
+    int32_t getRoiDelay1() const { return roi_delay_1_; }
+    void setRoiDelay1(int32_t v) { roi_delay_1_ = v; }
+
+    int32_t getRoiPrecount() const { return roi_precount_; }
+    void setRoiPrecount(int32_t v) { roi_precount_ = v; }
+
+    int32_t getRoiPeakWindow() const { return roi_peak_window_; }
+    void setRoiPeakWindow(int32_t v) { roi_peak_window_ = v; }
+
+    uint32_t getEnableTop() const { return enable_top_; }
+    void setEnableTop(uint32_t v) { enable_top_ = v; }
+
+    uint32_t getEnableMiddle() const { return enable_middle_; }
+    void setEnableMiddle(uint32_t v) { enable_middle_ = v; }
+
+    uint32_t getEnableBottom() const { return enable_bottom_; }
+    void setEnableBottom(uint32_t v) { enable_bottom_ = v; }
+
+    // disc_threshold_0
+    const std::vector<int32_t>& getDiscThreshold0() const { return disc_threshold_0_; }
+    std::vector<int32_t>& getDiscThreshold0() { return disc_threshold_0_; }
+    void setDiscThreshold0(const std::vector<int32_t>& v) { disc_threshold_0_ = v; }
+
+    // disc_threshold_1
+    const std::vector<int32_t>& getDiscThreshold1() const { return disc_threshold_1_; }
+    std::vector<int32_t>& getDiscThreshold1() { return disc_threshold_1_; }
+    void setDiscThreshold1(const std::vector<int32_t>& v) { disc_threshold_1_ = v; }
+
+    int32_t getNumRoiWords() const { return num_roi_words_; }
+    void setNumRoiWords(int32_t v) { num_roi_words_ = v; }
+
+    int32_t getRoiDeadtime() const { return roi_deadtime_; }
+    void setRoiDeadtime(int32_t v) { roi_deadtime_ = v; }
+
+    // disc_threshold_3
+    const std::vector<int32_t>& getDiscThreshold3() const { return disc_threshold_3_; }
+    std::vector<int32_t>& getDiscThreshold3() { return disc_threshold_3_; }
+    void setDiscThreshold3(const std::vector<int32_t>& v) { disc_threshold_3_ = v; }
+
+    // disc_threshold_4
+    const std::vector<int32_t>& getDiscThreshold4() const { return disc_threshold_4_; }
+    std::vector<int32_t>& getDiscThreshold4() { return disc_threshold_4_; }
+    void setDiscThreshold4(const std::vector<int32_t>& v) { disc_threshold_4_ = v; }
+
+    int32_t getPmtGateSize() const { return pmt_gate_size_; }
+    void setPmtGateSize(int32_t v) { pmt_gate_size_ = v; }
+
+    int32_t getPmtBeamSize() const { return pmt_beam_size_; }
+    void setPmtBeamSize(int32_t v) { pmt_beam_size_ = v; }
+
+    int32_t getFifoBlocksize() const { return fifo_blocksize_; }
+    void setFifoBlocksize(int32_t v) { fifo_blocksize_ = v; }
+
+};
+
+#endif //TPC_CONFIGS_H

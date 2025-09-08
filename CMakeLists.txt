@@ -19,6 +19,7 @@ set(LIB_SOURCES
         src/histogram.cpp
         src/tpc_monitor.cpp
         src/tpc_monitor_lbw.cpp
+        src/tpc_configs.cpp
 )
 
 # Create a static library for our core C++ code.
