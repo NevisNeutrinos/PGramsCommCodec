@@ -19,38 +19,31 @@ void LowBwTpcMonitor::clear() {
 
 std::vector<int32_t> LowBwTpcMonitor::serialize() const {
     std::vector<int32_t> serialized_data;
-    serialized_data.reserve(3 + charge_channel_num_samples.size());
+    // Reserve space for efficiency
+    serialized_data.reserve(num_members_ + NUM_CHARGE_CHANNELS);
 
-    // Metadata
-    serialized_data.push_back(num_fems);
-    serialized_data.push_back(num_charge_channels);
-    serialized_data.push_back(num_light_channels);
-
-    // Data
-    serialized_data.insert(serialized_data.end(),
-                           charge_channel_num_samples.begin(),
-                           charge_channel_num_samples.end());
+    // Serialize the histogram metadata
+    auto data = Serializer<LowBwTpcMonitor>::serialize_tuple(member_tuple());
+    serialized_data.insert(serialized_data.end(), data.begin(), data.end());
+    // Charge channel number of samples data
+    serialized_data.insert(serialized_data.end(), charge_channel_num_samples.begin(), charge_channel_num_samples.end());
     return serialized_data;
 }
 
 std::vector<int32_t>::const_iterator LowBwTpcMonitor::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                                  std::vector<int32_t>::const_iterator end) {
+                                                            std::vector<int32_t>::const_iterator end) {
+
     auto it = begin;
+    it = Serializer<LowBwTpcMonitor>::deserialize_tuple(member_tuple(), begin, end);
 
-    // Ensure there's enough data for the metadata fields
-    if (std::distance(it, end) < 3) {
-        throw std::runtime_error("Deserialization failed: not enough data for LowBwTpcMonitor metadata.");
+    // Ensure there's enough data for the bins
+    if (std::distance(it, end) < NUM_CHARGE_CHANNELS) {
+        throw std::runtime_error("Deserialization failed: not enough data for Number charge channels.");
     }
-    num_fems = *it++;
-    num_charge_channels = *it++;
-    num_light_channels = *it++;
 
-    // Ensure there's enough data for the samples vector
-    if (std::distance(it, end) < static_cast<long>(charge_channel_num_samples.size())) {
-        throw std::runtime_error("Deserialization failed: not enough data for LowBwTpcMonitor samples.");
-    }
-    std::copy(it, it + charge_channel_num_samples.size(), charge_channel_num_samples.begin());
-    it += charge_channel_num_samples.size();
+    // Copy num charge samples data
+    std::copy(it, it + NUM_CHARGE_CHANNELS, charge_channel_num_samples.begin());
+    it += NUM_CHARGE_CHANNELS;
 
     return it;
 }

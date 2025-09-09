@@ -17,12 +17,12 @@ TpcConfigs::TpcConfigs()
       enable_top_(0x0),
       enable_middle_(0x0),
       enable_bottom_(0xFFFF),
-      disc_threshold_0_(NUM_CHARGE_CHANNELS, 100),
-      disc_threshold_1_(NUM_CHARGE_CHANNELS, 250),
+      disc_threshold_0_(NUM_LIGHT_CHANNELS, 100),
+      disc_threshold_1_(NUM_LIGHT_CHANNELS, 250),
       num_roi_words_(30),
       roi_deadtime_(240),
-      disc_threshold_3_(NUM_CHARGE_CHANNELS, 0xFFF),
-      disc_threshold_4_(NUM_CHARGE_CHANNELS, 0xFFF),
+      disc_threshold_3_(NUM_LIGHT_CHANNELS, 0xFFF),
+      disc_threshold_4_(NUM_LIGHT_CHANNELS, 0xFFF),
       pmt_gate_size_(750),
       pmt_beam_size_(200),
       fifo_blocksize_(0xFFFF)
@@ -52,35 +52,15 @@ void TpcConfigs::clear() {
 
 std::vector<int32_t> TpcConfigs::serialize() const {
     std::vector<int32_t> serialized_data;
+    // Reserve space for efficiency
+    serialized_data.reserve(num_members_ + 2 * NUM_LIGHT_CHANNELS);
 
-    // Reserve space for all scalar fields + all vectors
-    serialized_data.reserve(
-        14 +
-        disc_threshold_0_.size() + disc_threshold_1_.size() +
-        disc_threshold_3_.size() + disc_threshold_4_.size()
-    );
-
-    // Scalars
-    serialized_data.push_back(summed_peak_thresh_);
-    serialized_data.push_back(channel_multiplicity_);
-    serialized_data.push_back(roi_delay_0_);
-    serialized_data.push_back(roi_delay_1_);
-    serialized_data.push_back(roi_precount_);
-    serialized_data.push_back(roi_peak_window_);
-    serialized_data.push_back(static_cast<int32_t>(enable_top_));
-    serialized_data.push_back(static_cast<int32_t>(enable_middle_));
-    serialized_data.push_back(static_cast<int32_t>(enable_bottom_));
-    serialized_data.push_back(num_roi_words_);
-    serialized_data.push_back(roi_deadtime_);
-    serialized_data.push_back(pmt_gate_size_);
-    serialized_data.push_back(pmt_beam_size_);
-    serialized_data.push_back(static_cast<int32_t>(fifo_blocksize_));
-
-    // Vectors
+    // Serialize the histogram metadata
+    auto data = Serializer<TpcConfigs>::serialize_tuple(member_tuple());
+    serialized_data.insert(serialized_data.end(), data.begin(), data.end());
+    // Disc channel thresholds
     serialized_data.insert(serialized_data.end(), disc_threshold_0_.begin(), disc_threshold_0_.end());
     serialized_data.insert(serialized_data.end(), disc_threshold_1_.begin(), disc_threshold_1_.end());
-    serialized_data.insert(serialized_data.end(), disc_threshold_3_.begin(), disc_threshold_3_.end());
-    serialized_data.insert(serialized_data.end(), disc_threshold_4_.begin(), disc_threshold_4_.end());
 
     return serialized_data;
 }
@@ -88,26 +68,11 @@ std::vector<int32_t> TpcConfigs::serialize() const {
 std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t>::const_iterator begin,
                                                              std::vector<int32_t>::const_iterator end) {
     auto it = begin;
-
     // Need 14 scalars first
-    if (std::distance(it, end) < 14) {
+    if (std::distance(it, end) < num_members_) {
         throw std::runtime_error("Deserialization failed: not enough data for TpcConfigs metadata.");
     }
-
-    summed_peak_thresh_ = *it++;
-    channel_multiplicity_ = *it++;
-    roi_delay_0_ = *it++;
-    roi_delay_1_ = *it++;
-    roi_precount_ = *it++;
-    roi_peak_window_ = *it++;
-    enable_top_ = static_cast<uint32_t>(*it++);
-    enable_middle_ = static_cast<uint32_t>(*it++);
-    enable_bottom_ = static_cast<uint32_t>(*it++);
-    num_roi_words_ = *it++;
-    roi_deadtime_ = *it++;
-    pmt_gate_size_ = *it++;
-    pmt_beam_size_ = *it++;
-    fifo_blocksize_ = static_cast<uint32_t>(*it++);
+    it = Serializer<TpcConfigs>::deserialize_tuple(member_tuple(), begin, end);
 
     // Vectors
     auto copy_vector = [&](std::vector<int32_t>& v) {
@@ -120,8 +85,6 @@ std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t
 
     copy_vector(disc_threshold_0_);
     copy_vector(disc_threshold_1_);
-    copy_vector(disc_threshold_3_);
-    copy_vector(disc_threshold_4_);
 
     return it;
 }
@@ -147,8 +110,6 @@ py::dict TpcConfigs::getMetricDict() {
 
     metric_dict["disc_threshold_0"] = vector_to_numpy_array_1d(disc_threshold_0_);
     metric_dict["disc_threshold_1"] = vector_to_numpy_array_1d(disc_threshold_1_);
-    metric_dict["disc_threshold_3"] = vector_to_numpy_array_1d(disc_threshold_3_);
-    metric_dict["disc_threshold_4"] = vector_to_numpy_array_1d(disc_threshold_4_);
 
     return metric_dict;
 }

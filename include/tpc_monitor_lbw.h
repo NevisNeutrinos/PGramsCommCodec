@@ -14,6 +14,15 @@ private:
     int32_t num_light_channels;
     std::vector<int32_t> charge_channel_num_samples;
 
+    // Implement  the serialize/deserialize
+    size_t num_members_ = 3;
+    auto member_tuple() {
+        return std::tie(num_fems, num_charge_channels, num_light_channels);
+    };
+    auto member_tuple() const {
+        return std::tie(num_fems, num_charge_channels, num_light_channels);
+    };
+
 public:
     LowBwTpcMonitor();
 

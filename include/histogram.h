@@ -21,14 +21,12 @@ private:
     int32_t above_range_count;
 
     // Implement  the serialize/deserialize
-    auto member_tuple_ = std::tie(min_value, max_value, num_bins, below_range_count, above_range_count);
-    constexpr std::size_t num_members_ = std::tuple_size<decltype(member_tuple_)>::value;
-
-    auto member_tuple() override {
-        return member_tuple_;
+    size_t num_members_ = 5;
+    auto member_tuple() {
+        return std::tie(min_value, max_value, num_bins, below_range_count, above_range_count);
     };
-    auto member_tuple() const override {
-        return member_tuple_;
+    auto member_tuple() const {
+        return std::tie(min_value, max_value, num_bins, below_range_count, above_range_count);
     };
 
 public:

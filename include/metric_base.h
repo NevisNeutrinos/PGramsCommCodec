@@ -10,6 +10,7 @@
 #include <tuple>
 #include <stdexcept>
 #include <algorithm>
+#include <any>
 
 
 #ifdef USE_PYTHON
@@ -59,18 +60,6 @@ public:
     }
 
     /**
-     * Function to create a tuple of all the concrete class members.
-     * The order of the members in std::tie(member0, member1, ..., memberN) defines the
-     * serialization order.
-     *
-     * This isn't useful for more complicated metrics so do not make it pure virtual.
-     *
-     * @return tuple of form std::tuple<int &, int &, ..., int &>
-     */
-    virtual auto member_tuple();
-    virtual auto member_tuple() const;
-
-    /**
      *  struct to automate the serialize/deserialize the metric classes
      * @tparam T The derived class to be serialized/de-serialized.
      */
@@ -78,7 +67,7 @@ public:
     struct Serializer {
         // Convert tuple of ints to vector
         template <typename... Args>
-        static std::vector<int32_t> serialize_tuple(const std::tuple<Args...>& t) {
+        static std::vector<int32_t> serialize_tuple(const std::tuple<Args...> t) {
             std::vector<int32_t> result;
             result.reserve(sizeof...(Args));
             std::apply([&](const auto&... elems) {
@@ -89,7 +78,7 @@ public:
 
         // Deserialize vector into tuple
         template <typename... Args, typename Iter>
-        static Iter deserialize_tuple(std::tuple<Args...>& t, Iter it, Iter end) {
+        static Iter deserialize_tuple(std::tuple<Args...> t, Iter it, Iter end) {
             auto idx = 0;
             auto size = std::distance(it, end);
             if (size < sizeof...(Args))

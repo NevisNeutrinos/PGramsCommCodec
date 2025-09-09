@@ -44,23 +44,6 @@ void Histogram::clear() {
     above_range_count = 0;
 }
 
-// std::vector<int32_t> Histogram::serialize() const {
-//     std::vector<int32_t> serialized_data;
-//     // Reserve space for efficiency
-//     serialized_data.reserve(5 + bins.size());
-//
-//     // Metadata
-//     serialized_data.push_back(min_value);
-//     serialized_data.push_back(max_value);
-//     serialized_data.push_back(num_bins);
-//     serialized_data.push_back(below_range_count);
-//     serialized_data.push_back(above_range_count);
-//
-//     // Bin data
-//     serialized_data.insert(serialized_data.end(), bins.begin(), bins.end());
-//     return serialized_data;
-// }
-
 std::vector<int32_t> Histogram::serialize() const {
     std::vector<int32_t> serialized_data;
     // Reserve space for efficiency
@@ -76,7 +59,7 @@ std::vector<int32_t> Histogram::serialize() const {
 
 std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>::const_iterator begin,
                                                             std::vector<int32_t>::const_iterator end) {
-
+    auto it = begin;
     it = Serializer<Histogram>::deserialize_tuple(member_tuple(), begin, end);
 
     // Re-initialize the histogram's structure based on deserialized metadata

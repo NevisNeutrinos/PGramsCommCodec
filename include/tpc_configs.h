@@ -27,17 +27,36 @@ private:
     uint32_t enable_top_ = 0x0;            // Enable mask for channels on top connector
     uint32_t enable_middle_ = 0x0;         // Enable mask for channels on middle connector
     uint32_t enable_bottom_ = 0xFFFF;      // Enable mask for channels on bottom connector
-    std::vector<int32_t> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
-    std::vector<int32_t> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
     int32_t num_roi_words_ = 30;    // Number of samples in the ROI
     int32_t roi_deadtime_ = 240;    // The number of samples after the ROI which are an enforced deadtime
     // Won't use these
-    std::vector<int32_t> disc_threshold_3_;
-    std::vector<int32_t> disc_threshold_4_;
     int32_t pmt_gate_size_ = 750;
     int32_t pmt_beam_size_ = 200;
-
     int32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
+
+    // Will use these
+    std::vector<int32_t> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
+    std::vector<int32_t> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
+    // Won't use these
+    std::vector<int32_t> disc_threshold_3_;
+    std::vector<int32_t> disc_threshold_4_;
+
+
+    // // Implement  the serialize/deserialize
+    size_t num_members_ = 14;
+
+    auto member_tuple() {
+        return std::tie(summed_peak_thresh_, channel_multiplicity_,
+        roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
+        enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
+        roi_deadtime_, pmt_gate_size_, pmt_beam_size_, fifo_blocksize_);
+    };
+    auto member_tuple() const {
+        return std::tie(summed_peak_thresh_, channel_multiplicity_,
+        roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
+        enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
+        roi_deadtime_, pmt_gate_size_, pmt_beam_size_, fifo_blocksize_);
+    };
 
 public:
     TpcConfigs();
