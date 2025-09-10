@@ -9,9 +9,7 @@
 #include <cstdint>
 #include <tuple>
 #include <stdexcept>
-#include <algorithm>
-#include <any>
-
+#include "constants.h"
 
 #ifdef USE_PYTHON
     #include <pybind11/pybind11.h>
@@ -25,11 +23,11 @@
 class MetricBase {
 public:
 
-    // Central location for fixed constants.
-    constexpr static size_t NUM_CHARGE_CHANNELS = 64;
-    constexpr static size_t NUM_LIGHT_CHANNELS = 32;
-    constexpr static size_t CHARGE_BINS = 16;
-    constexpr static size_t LIGHT_BINS = 20;
+    // // Central location for fixed constants.
+    // constexpr static size_t NUM_CHARGE_CHANNELS = 64;
+    // constexpr static size_t NUM_LIGHT_CHANNELS = 32;
+    // constexpr static size_t CHARGE_BINS = 16;
+    // constexpr static size_t LIGHT_BINS = 20;
 
     // Virtual destructor is essential for a polymorphic base class.
     virtual ~MetricBase() = default;
@@ -107,6 +105,18 @@ public:
     template <typename T>
     static py::array_t<T> vector_to_numpy_array_1d(const std::vector<T>& vec) {
         return py::array_t(vec.size(), vec.data());
+    }
+
+    /**
+     * Return a copy of the C++ std::array to python as a numpy array.
+     * @tparam T The array type (dtype in python)
+     * @tparam N Size of the array
+     * @param arr The C++ std::array
+     * @return Return a copy of the std::array as a numpy array
+     */
+    template <typename T, size_t N>
+    py::array_t<T> array_to_numpy_array_1d(const std::array<T, N>& arr) {
+        return py::array_t<T>({N}, arr.data());
     }
 #endif
 

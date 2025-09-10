@@ -7,6 +7,8 @@
 
 #include "metric_base.h"
 
+using namespace constants::tpc_readout;
+
 class Histogram : public MetricBase {
 private:
     // Configuration

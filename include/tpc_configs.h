@@ -8,6 +8,8 @@
 #include "metric_base.h"
 #include <vector>
 
+using namespace constants::tpc_readout;
+
 class TpcConfigs : public MetricBase {
 private:
 

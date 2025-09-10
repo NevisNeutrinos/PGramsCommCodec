@@ -6,7 +6,8 @@
 #include <stdexcept>
 #include <iostream>
 
-LowBwTpcMonitor::LowBwTpcMonitor() : num_fems(0), num_charge_channels(0), num_light_channels(0) {
+LowBwTpcMonitor::LowBwTpcMonitor() : num_fems(0), num_charge_channels(0), num_light_channels(0),
+                                     charge_channel_balance(0), light_channel_balance(0) {
     charge_channel_num_samples.resize(NUM_CHARGE_CHANNELS, 0);
 }
 
@@ -14,6 +15,8 @@ void LowBwTpcMonitor::clear() {
     num_fems = 0;
     num_charge_channels = 0;
     num_light_channels = 0;
+    charge_channel_balance = 0;
+    light_channel_balance = 0;
     std::fill(charge_channel_num_samples.begin(), charge_channel_num_samples.end(), 0);
 }
 
@@ -55,6 +58,8 @@ py::dict LowBwTpcMonitor::getMetricDict() {
     metric_dict["num_fems"] = num_fems;
     metric_dict["num_charge_channels"] = num_charge_channels;
     metric_dict["num_light_channels"] = num_light_channels;
+    metric_dict["charge_channel_balance"] = charge_channel_balance;
+    metric_dict["light_channel_balance"] = light_channel_balance;
     metric_dict["charge_channel_num_samples"] = vector_to_numpy_array_1d(charge_channel_num_samples);
 
     return metric_dict;
@@ -66,6 +71,8 @@ void LowBwTpcMonitor::print() const {
     std::cout << "  num_fems: " << num_fems << std::endl;
     std::cout << "  num_charge_channels: " << num_charge_channels << std::endl;
     std::cout << "  num_light_channels: " << num_light_channels << std::endl;
+    std::cout << "  charge_channel_balance: " << charge_channel_balance << std::endl;
+    std::cout << "  light_channel_balance: " << light_channel_balance << std::endl;
     std::cout << "  Charge Channel Samples (first 10): ";
     for (size_t i = 0; i < 10 && i < charge_channel_num_samples.size(); ++i) {
         std::cout << charge_channel_num_samples[i] << (i == 9 || i == charge_channel_num_samples.size() - 1 ? "" : ", ");
