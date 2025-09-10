@@ -20,6 +20,7 @@ set(LIB_SOURCES
         src/tpc_monitor.cpp
         src/tpc_monitor_lbw.cpp
         src/tpc_configs.cpp
+        src/tpc_monitor_query.cpp
 )
 
 # Create a static library for our core C++ code.
