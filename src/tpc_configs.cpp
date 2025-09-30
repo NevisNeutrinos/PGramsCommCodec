@@ -152,9 +152,9 @@ void TpcConfigs::setMetricDict(py::dict &config) {
     AssignScalar(software_trigger_rate_hz_, config, "software_trigger_rate_hz");
     AssignScalar(tpc_dead_time_, config, "tpc_dead_time");
 
-    AssignVector(prescale_, config, "prescale");
-    AssignVector(disc_threshold_0_, config, "disc_threshold_0");
-    AssignVector(disc_threshold_1_, config, "disc_threshold_1");
+    AssignArray(prescale_, config, "prescale");
+    AssignArray(disc_threshold_0_, config, "disc_threshold_0");
+    AssignArray(disc_threshold_1_, config, "disc_threshold_1");
 
 }
 #endif

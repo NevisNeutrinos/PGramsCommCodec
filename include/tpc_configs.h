@@ -84,6 +84,17 @@ public:
     std::vector<int32_t> serialize() const override;
     std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
                                                      std::vector<int32_t>::const_iterator end) override;
+
+    // Helper for trigger selection
+    std::string toTriggerSourceString(int code) {
+        switch (code) {
+            case 0: return "light";
+            case 1: return "software";
+            case 2: return "external";
+            default: return "unknown";
+        }
+    }
+
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;
     void setMetricDict(py::dict &config);
@@ -97,32 +108,42 @@ public:
         }
         config_param = config[py::str(config_key)].cast<T>();
     }
-
-    template<size_t N>
-    void AssignVector(std::array<int32_t, N> &param_vec, py::dict &config, std::string config_key) {
-        std::vector<int32_t> tmp_thresh;
-        if (!config.contains(py::str(config_key)) ) {
+    
+    template <size_t N>
+    void AssignArray(std::array<int32_t, N> &param_vec, py::dict &config, const std::string &config_key) {
+        if (!config.contains(py::str(config_key))) {
             throw std::runtime_error("Missing key [" + config_key + "]");
         }
+
         py::object obj = config[py::str(config_key)];
+        std::vector<int32_t> tmp;
+
         if (py::isinstance<py::array>(obj)) {
-            // Handle numpy array explicitly
-            py::array arr = py::cast<py::array>(obj);
+            // Handle numpy array (forcecast ensures conversion to int32_t)
+            py::array_t<int32_t, py::array::c_style | py::array::forcecast> arr = py::cast<py::array>(obj);
             if (arr.ndim() != 1) {
-                throw std::runtime_error("Expected but did not find, 1D array for " + config_key);
+                throw std::runtime_error("Expected 1D array for " + config_key);
             }
-            tmp_thresh.resize(arr.shape(0));
-            std::memcpy(tmp_thresh.data(), arr.data(), arr.nbytes());
+            tmp.resize(arr.size());
+            std::memcpy(tmp.data(), arr.data(), arr.size() * sizeof(int32_t));
+        } else if (py::isinstance<py::sequence>(obj)) {
+            // Handle Python list/tuple
+            py::sequence seq = py::reinterpret_borrow<py::sequence>(obj);
+            tmp.resize(seq.size());
+            for (size_t i = 0; i < seq.size(); i++) {
+                tmp[i] = seq[i].cast<int32_t>();
+            }
         } else {
-            // Fall back: assume it's a Python list
-            AssignScalar(tmp_thresh, config, config_key);
+            throw std::runtime_error("Expected list or numpy array for " + config_key);
         }
-        // Make sure we have the right number of thresholds
-        if (tmp_thresh.size() != N) {
-            throw std::runtime_error( "Incorrect number of " + config_key + " thresholds! Expected/Received " +
-                                     std::to_string(N) + "/" + std::to_string(tmp_thresh.size()) );
+
+        // Validate size
+        if (tmp.size() != N) {
+            throw std::runtime_error("Incorrect number of " + config_key + " thresholds! Expected/Received " +
+                                     std::to_string(N) + "/" + std::to_string(tmp.size()));
         }
-        for (size_t t = 0; t < tmp_thresh.size(); t++) { param_vec.at(t) = tmp_thresh.at(t); }
+        // Copy into std::array
+        std::copy(tmp.begin(), tmp.end(), param_vec.begin());
     }
 #endif
 

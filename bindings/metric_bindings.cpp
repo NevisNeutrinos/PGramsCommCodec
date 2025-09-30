@@ -105,6 +105,7 @@ PYBIND11_MODULE(datamon, m) {
         .def(py::init<>())
         .def("clear", &TpcConfigs::clear)
         .def("serialize", &TpcConfigs::serialize)
+        .def("to_trigger_source_string", &TpcConfigs::toTriggerSourceString)
         .def("set_config_dict", &TpcConfigs::setMetricDict)
         .def("print", &TpcConfigs::print);
 }
