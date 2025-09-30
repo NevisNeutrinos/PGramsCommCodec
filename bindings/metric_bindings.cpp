@@ -8,6 +8,7 @@
 #include "../include/histogram.h"
 #include "../include/tpc_monitor.h"
 #include "../include/tpc_monitor_lbw.h"
+#include "../include/tpc_configs.h"
 
 namespace py = pybind11;
 
@@ -98,5 +99,13 @@ PYBIND11_MODULE(datamon, m) {
         .def_property_readonly("num_charge_channels", &LowBwTpcMonitor::getNumChargeChannels)
         .def_property_readonly("num_light_channels", &LowBwTpcMonitor::getNumLightChannels)
         .def_property_readonly("charge_channel_num_samples", &LowBwTpcMonitor::getChargeChannelNumSamples);
+
+    // Bind the TpcConfigs class
+    py::class_<TpcConfigs, MetricBase>(m, "TpcConfig")
+        .def(py::init<>())
+        .def("clear", &TpcConfigs::clear)
+        .def("serialize", &TpcConfigs::serialize)
+        .def("set_config_dict", &TpcConfigs::setMetricDict)
+        .def("print", &TpcConfigs::print)
 }
 

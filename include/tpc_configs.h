@@ -31,33 +31,46 @@ private:
     uint32_t enable_bottom_ = 0xFFFF;      // Enable mask for channels on bottom connector
     int32_t num_roi_words_ = 30;    // Number of samples in the ROI
     int32_t roi_deadtime_ = 240;    // The number of samples after the ROI which are an enforced deadtime
-    // Won't use these
-    int32_t pmt_gate_size_ = 750;
-    int32_t pmt_beam_size_ = 200;
-    int32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
+    uint32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
 
-    // Will use these
-    std::vector<int32_t> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
-    std::vector<int32_t> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
+    // Trigger parameters
+    int32_t trigger_source_;
+    int32_t software_trigger_rate_hz_;
+    int32_t tpc_dead_time_;
+    std::array<int32_t, NUM_PRESCALES> prescale_;
+
+    // Discriminator thresholds
+    std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
+    std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
+
     // Won't use these
-    std::vector<int32_t> disc_threshold_3_;
-    std::vector<int32_t> disc_threshold_4_;
+    int32_t pmt_gate_size_ = 750; // : 750,
+    int32_t pmt_beam_size_ = 202; // : 202,
+    int32_t beam_multiplicity_ = 100; // : 100,
+    int32_t beam_summed_adc_thresh_ = 500; // : 500,
+    int32_t michel_multiplicity_ = 100; // : 100,
+    int32_t michel_summed_adc_thresh_ = 100; // : 500,
+    std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_3_;
+    std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_4_;
 
 
     // // Implement  the serialize/deserialize
-    size_t num_members_ = 14;
+    size_t num_members_ = 15;
 
     auto member_tuple() {
         return std::tie(summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
-        roi_deadtime_, pmt_gate_size_, pmt_beam_size_, fifo_blocksize_);
+        roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
+        tpc_dead_time_);
     };
+
     auto member_tuple() const {
         return std::tie(summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
-        roi_deadtime_, pmt_gate_size_, pmt_beam_size_, fifo_blocksize_);
+        roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
+        tpc_dead_time_);
     };
 
 public:
@@ -72,6 +85,27 @@ public:
                                                      std::vector<int32_t>::const_iterator end) override;
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;
+    bool setMetricDict(py::dict &config);
+
+    // Config setter helper functions
+    template<typename T>
+    void AssignScalar(T &config_param, py::dict &config, std::string &config_key) {
+        if (!config.contains(config_key) ) {
+            throw std::runtime_error("Missing key [" + config_key + "]");
+        }
+        config_param = config[config_key].cast<T>();
+    }
+
+    template<size_t N>
+    void AssignVector(std::array<int32_t, N> &param_vec, py::dict &config, std::string &config_key) {
+        std::vector<int32_t> tmp_thresh;
+        AssignScalar(tmp_thresh, config, config_key);
+        if (tmp_thresh.size() != N) {
+            throw std::runtime_error( "Incorrect number of " + config_key + " thresholds! Expected/Received " +
+                                     std::to_string(N) + "/" + std::to_string(tmp_thresh.size()) );
+        }
+        for (size_t t = 0; t < tmp_thresh.size(); t++) { param_vec.at(t) = tmp_thresh.at(t); }
+    }
 #endif
 
     // ===== Getters & Setters =====
@@ -104,31 +138,11 @@ public:
     uint32_t getEnableBottom() const { return enable_bottom_; }
     void setEnableBottom(uint32_t v) { enable_bottom_ = v; }
 
-    // disc_threshold_0
-    const std::vector<int32_t>& getDiscThreshold0() const { return disc_threshold_0_; }
-    std::vector<int32_t>& getDiscThreshold0() { return disc_threshold_0_; }
-    void setDiscThreshold0(const std::vector<int32_t>& v) { disc_threshold_0_ = v; }
-
-    // disc_threshold_1
-    const std::vector<int32_t>& getDiscThreshold1() const { return disc_threshold_1_; }
-    std::vector<int32_t>& getDiscThreshold1() { return disc_threshold_1_; }
-    void setDiscThreshold1(const std::vector<int32_t>& v) { disc_threshold_1_ = v; }
-
     int32_t getNumRoiWords() const { return num_roi_words_; }
     void setNumRoiWords(int32_t v) { num_roi_words_ = v; }
 
     int32_t getRoiDeadtime() const { return roi_deadtime_; }
     void setRoiDeadtime(int32_t v) { roi_deadtime_ = v; }
-
-    // disc_threshold_3
-    const std::vector<int32_t>& getDiscThreshold3() const { return disc_threshold_3_; }
-    std::vector<int32_t>& getDiscThreshold3() { return disc_threshold_3_; }
-    void setDiscThreshold3(const std::vector<int32_t>& v) { disc_threshold_3_ = v; }
-
-    // disc_threshold_4
-    const std::vector<int32_t>& getDiscThreshold4() const { return disc_threshold_4_; }
-    std::vector<int32_t>& getDiscThreshold4() { return disc_threshold_4_; }
-    void setDiscThreshold4(const std::vector<int32_t>& v) { disc_threshold_4_ = v; }
 
     int32_t getPmtGateSize() const { return pmt_gate_size_; }
     void setPmtGateSize(int32_t v) { pmt_gate_size_ = v; }
@@ -139,6 +153,39 @@ public:
     int32_t getFifoBlocksize() const { return fifo_blocksize_; }
     void setFifoBlocksize(int32_t v) { fifo_blocksize_ = v; }
 
+    int32_t getTriggerSource() const { return trigger_source_; }
+    void setTriggerSource(int32_t v) { trigger_source_ = v; }
+
+    int32_t getSoftwareTriggerRateHz() const { return software_trigger_rate_hz_; }
+    void setSoftwareTriggerRateHz(int32_t v) { software_trigger_rate_hz_ = v; }
+
+    int32_t getTpcDeadTime() const { return tpc_dead_time_; }
+    void setTpcDeadTime(int32_t v) { tpc_dead_time_ = v; }
+
+    // prescale
+    const std::array<int32_t, NUM_PRESCALES>& getPrescale() const { return prescale_; }
+    std::array<int32_t, NUM_PRESCALES>& getPrescale() { return prescale_; }
+    void setPrescale(const std::array<int32_t, NUM_PRESCALES>& v) { prescale_ = v; }
+
+    // disc_threshold_0
+    const std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold0() const { return disc_threshold_0_; }
+    std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold0() { return disc_threshold_0_; }
+    void setDiscThreshold0(const std::array<int32_t, NUM_LIGHT_CHANNELS>& v) { disc_threshold_0_ = v; }
+
+    // disc_threshold_1
+    const std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold1() const { return disc_threshold_1_; }
+    std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold1() { return disc_threshold_1_; }
+    void setDiscThreshold1(const std::array<int32_t, NUM_LIGHT_CHANNELS>& v) { disc_threshold_1_ = v; }
+
+    // disc_threshold_3
+    const std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold3() const { return disc_threshold_3_; }
+    std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold3() { return disc_threshold_3_; }
+    void setDiscThreshold3(const std::array<int32_t, NUM_LIGHT_CHANNELS>& v) { disc_threshold_3_ = v; }
+
+    // disc_threshold_4
+    const std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold4() const { return disc_threshold_4_; }
+    std::array<int32_t, NUM_LIGHT_CHANNELS>& getDiscThreshold4() { return disc_threshold_4_; }
+    void setDiscThreshold4(const std::array<int32_t, NUM_LIGHT_CHANNELS>& v) { disc_threshold_4_ = v; }
 };
 
 #endif //TPC_CONFIGS_H
