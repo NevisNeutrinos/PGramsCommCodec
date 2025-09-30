@@ -7,6 +7,7 @@
 
 #include "metric_base.h"
 #include <vector>
+#include <iostream>
 
 using namespace constants::tpc_readout;
 
@@ -85,21 +86,38 @@ public:
                                                      std::vector<int32_t>::const_iterator end) override;
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;
-    bool setMetricDict(py::dict &config);
+    void setMetricDict(py::dict &config);
 
     // Config setter helper functions
     template<typename T>
-    void AssignScalar(T &config_param, py::dict &config, std::string &config_key) {
-        if (!config.contains(config_key) ) {
+    void AssignScalar(T &config_param, py::dict &config, std::string config_key) {
+        std::cout << "Config/type " << config_key << "/" << typeid(T).name() << std::endl;
+        if (!config.contains(py::str(config_key)) ) {
             throw std::runtime_error("Missing key [" + config_key + "]");
         }
-        config_param = config[config_key].cast<T>();
+        config_param = config[py::str(config_key)].cast<T>();
     }
 
     template<size_t N>
-    void AssignVector(std::array<int32_t, N> &param_vec, py::dict &config, std::string &config_key) {
+    void AssignVector(std::array<int32_t, N> &param_vec, py::dict &config, std::string config_key) {
         std::vector<int32_t> tmp_thresh;
-        AssignScalar(tmp_thresh, config, config_key);
+        if (!config.contains(py::str(config_key)) ) {
+            throw std::runtime_error("Missing key [" + config_key + "]");
+        }
+        py::object obj = config[py::str(config_key)];
+        if (py::isinstance<py::array>(obj)) {
+            // Handle numpy array explicitly
+            py::array arr = py::cast<py::array>(obj);
+            if (arr.ndim() != 1) {
+                throw std::runtime_error("Expected but did not find, 1D array for " + config_key);
+            }
+            tmp_thresh.resize(arr.shape(0));
+            std::memcpy(tmp_thresh.data(), arr.data(), arr.nbytes());
+        } else {
+            // Fall back: assume it's a Python list
+            AssignScalar(tmp_thresh, config, config_key);
+        }
+        // Make sure we have the right number of thresholds
         if (tmp_thresh.size() != N) {
             throw std::runtime_error( "Incorrect number of " + config_key + " thresholds! Expected/Received " +
                                      std::to_string(N) + "/" + std::to_string(tmp_thresh.size()) );

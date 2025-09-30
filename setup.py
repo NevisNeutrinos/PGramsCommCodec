@@ -10,6 +10,7 @@ sources = [
     'src/histogram.cpp',
     'src/tpc_monitor.cpp',
     'src/tpc_monitor_lbw.cpp',
+    'src/tpc_configs.cpp',
 ]
 
 ext_modules = [

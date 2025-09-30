@@ -106,6 +106,6 @@ PYBIND11_MODULE(datamon, m) {
         .def("clear", &TpcConfigs::clear)
         .def("serialize", &TpcConfigs::serialize)
         .def("set_config_dict", &TpcConfigs::setMetricDict)
-        .def("print", &TpcConfigs::print)
+        .def("print", &TpcConfigs::print);
 }
 
