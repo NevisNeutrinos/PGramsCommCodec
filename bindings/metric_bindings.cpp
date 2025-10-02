@@ -9,6 +9,7 @@
 #include "../include/tpc_monitor.h"
 #include "../include/tpc_monitor_lbw.h"
 #include "../include/tpc_configs.h"
+#include "../include/daq_comp_monitor.h"
 
 namespace py = pybind11;
 
@@ -108,5 +109,21 @@ PYBIND11_MODULE(datamon, m) {
         .def("to_trigger_source_string", &TpcConfigs::toTriggerSourceString)
         .def("set_config_dict", &TpcConfigs::setMetricDict)
         .def("print", &TpcConfigs::print);
+
+
+    // Bind the DaqCompMonitor class
+    py::class_<DaqCompMonitor, MetricBase>(m, "DaqCompMonitor")
+        .def(py::init<>())
+        .def("clear", &DaqCompMonitor::clear)
+        .def("serialize", &DaqCompMonitor::serialize)
+
+        .def_property_readonly("daq_bit_word", &DaqCompMonitor::getFullDaqBitWord)
+        .def_property_readonly("tpc_disk", &DaqCompMonitor::getTpcDisk)
+        .def_property_readonly("tof_disk", &DaqCompMonitor::getTofDisk)
+        .def_property_readonly("sys_disk", &DaqCompMonitor::getSysDisk)
+        .def_property_readonly("cpu_usage", &DaqCompMonitor::getCpuUsage)
+        .def_property_readonly("memory_usage", &DaqCompMonitor::getMemoryUsage)
+        .def_property_readonly("disk_temp", &DaqCompMonitor::getDiskTemp)
+        .def_property_readonly("cpu_temp", &DaqCompMonitor::getCpuTemp);
 }
 

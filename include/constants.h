@@ -8,6 +8,9 @@
 #include <cstddef>
 
 namespace constants {
+    namespace daq_computer {
+        constexpr size_t NUM_CPUS = 8;
+    }
     namespace tpc_readout {
         // Expected number of FEMs
         constexpr size_t NUM_FEMS = 4;

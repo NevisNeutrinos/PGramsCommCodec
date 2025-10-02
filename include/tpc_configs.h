@@ -108,7 +108,7 @@ public:
         }
         config_param = config[py::str(config_key)].cast<T>();
     }
-    
+
     template <size_t N>
     void AssignArray(std::array<int32_t, N> &param_vec, py::dict &config, const std::string &config_key) {
         if (!config.contains(py::str(config_key))) {

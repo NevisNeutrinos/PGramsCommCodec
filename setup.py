@@ -11,6 +11,7 @@ sources = [
     'src/tpc_monitor.cpp',
     'src/tpc_monitor_lbw.cpp',
     'src/tpc_configs.cpp',
+    'src/daq_comp_monitor.cpp'
 ]
 
 ext_modules = [
