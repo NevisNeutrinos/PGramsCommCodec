@@ -10,6 +10,7 @@
 #include "../include/tpc_monitor_lbw.h"
 #include "../include/tpc_configs.h"
 #include "../include/daq_comp_monitor.h"
+#include "../include/communication_codes.h"
 
 namespace py = pybind11;
 
@@ -62,6 +63,21 @@ PYBIND11_MODULE(datamon, m) {
         .def("deserialize", static_cast<void (MetricBase::*)(const std::vector<int32_t>&)>(&MetricBase::deserialize), "Deserialize data from a list of integers.")
         .def("get_metric_dict", &MetricBase::getMetricDict, "Deserialize data and return a dictionary.");
 
+    // Command enum class bindings
+    py::enum_<pgrams::communication::CommunicationCodes>(m, "CommCodes")
+        // Orchestrator
+        .value("OrcBootAllDaq", pgrams::communication::CommunicationCodes::ORC_Boot_All_DAQ)
+        .value("OrcShutdownAllDaq", pgrams::communication::CommunicationCodes::ORC_Shutdown_All_DAQ)
+        .value("OrcStartComputerStatus", pgrams::communication::CommunicationCodes::ORC_Start_Computer_Status)
+        .value("OrcStopComputerStatus", pgrams::communication::CommunicationCodes::ORC_Stop_Computer_Status)
+        // TPC Readout
+        .value("ColConfigure", pgrams::communication::CommunicationCodes::COL_Configure)
+        .value("ColStartRun", pgrams::communication::CommunicationCodes::COL_Start_Run)
+        .value("ColStopRun", pgrams::communication::CommunicationCodes::COL_Stop_Run)
+        .value("ColResetRun", pgrams::communication::CommunicationCodes::COL_Reset_Run)
+        .value("ColQueryHardwareStatus", pgrams::communication::CommunicationCodes::COL_Query_Hardware_Status)
+        .value("ColHardwareStatus", pgrams::communication::CommunicationCodes::COL_Hardware_Status)
+        .export_values();
 
     // Bind the Histogram class
     py::class_<Histogram, MetricBase>(m, "Histogram")
