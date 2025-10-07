@@ -22,6 +22,7 @@ set(LIB_SOURCES
         src/tpc_configs.cpp
         src/tpc_monitor_query.cpp
         src/daq_comp_monitor.cpp
+        src/tpc_readout_monitor.cpp
 )
 
 # Create a static library for our core C++ code.

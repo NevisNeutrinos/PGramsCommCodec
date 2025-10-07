@@ -14,6 +14,7 @@ namespace constants {
     namespace tpc_readout {
         // Expected number of FEMs
         constexpr size_t NUM_FEMS = 4;
+        constexpr size_t NUM_BOARDS = NUM_FEMS + 2; // + XMIT and Trigger
         // Trigger constants
         constexpr size_t NUM_PRESCALES = 9;
         // Expected number of channels and samples per channel for charge & light

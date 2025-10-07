@@ -10,6 +10,7 @@
 #include "../include/tpc_monitor_lbw.h"
 #include "../include/tpc_configs.h"
 #include "../include/daq_comp_monitor.h"
+#include "../include/tpc_readout_monitor.h"
 #include "../include/communication_codes.h"
 
 namespace py = pybind11;
@@ -125,6 +126,13 @@ PYBIND11_MODULE(datamon, m) {
         .def("to_trigger_source_string", &TpcConfigs::toTriggerSourceString)
         .def("set_config_dict", &TpcConfigs::setMetricDict)
         .def("print", &TpcConfigs::print);
+
+    // Bind the TPC Readout Monitor class
+    py::class_<TpcReadoutMonitor, MetricBase>(m, "TpcReadoutMonitor")
+        .def(py::init<>())
+        .def("clear", &TpcReadoutMonitor::clear)
+        .def("serialize", &TpcReadoutMonitor::serialize)
+        .def("print", &TpcReadoutMonitor::print);
 
 
     // Bind the DaqCompMonitor class

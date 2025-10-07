@@ -54,7 +54,6 @@ private:
     std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_3_;
     std::array<int32_t, NUM_LIGHT_CHANNELS> disc_threshold_4_;
 
-
     // // Implement  the serialize/deserialize
     size_t num_members_ = 15;
 
