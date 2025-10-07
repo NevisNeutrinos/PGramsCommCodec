@@ -84,7 +84,7 @@ public:
     void print() const;
 
     // Public setters for populating data
-    void setReadoutState(State &state) { readout_state_ = static_cast<int32_t>(state); };
+    void setReadoutState(int32_t state) { readout_state_ = state; };
     void setNumEvents(size_t num_events) {
       num_events_upper_ = getUpper32(num_events);
       num_events_lower_ = getLower32(num_events);

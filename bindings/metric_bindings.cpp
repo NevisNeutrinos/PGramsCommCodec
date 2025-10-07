@@ -71,6 +71,8 @@ PYBIND11_MODULE(datamon, m) {
         .value("OrcShutdownAllDaq", pgrams::communication::CommunicationCodes::ORC_Shutdown_All_DAQ)
         .value("OrcStartComputerStatus", pgrams::communication::CommunicationCodes::ORC_Start_Computer_Status)
         .value("OrcStopComputerStatus", pgrams::communication::CommunicationCodes::ORC_Stop_Computer_Status)
+        .value("OrcExecCpuRestart", pgrams::communication::CommunicationCodes::ORC_Exec_CPU_Restart)
+        .value("OrcExecCpuShutdown", pgrams::communication::CommunicationCodes::ORC_Exec_CPU_Shutdown)
         // TPC Readout
         .value("ColConfigure", pgrams::communication::CommunicationCodes::COL_Configure)
         .value("ColStartRun", pgrams::communication::CommunicationCodes::COL_Start_Run)
