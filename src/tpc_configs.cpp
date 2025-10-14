@@ -23,6 +23,7 @@ TpcConfigs::TpcConfigs()
       trigger_source_(1),
       software_trigger_rate_hz_(50),
       tpc_dead_time_(0x10),
+      light_trig_prescale_(0),
       pmt_gate_size_(750),
       pmt_beam_size_(200) {
     // Fill the arrays with default values
@@ -50,6 +51,7 @@ void TpcConfigs::clear() {
     trigger_source_ = 1;
     software_trigger_rate_hz_ = 50;
     tpc_dead_time_ = 0x10;
+    light_trig_prescale_ = 0;
     std::fill(prescale_.begin(), prescale_.end(), 0);
     std::fill(disc_threshold_0_.begin(), disc_threshold_0_.end(), 0);
     std::fill(disc_threshold_1_.begin(), disc_threshold_1_.end(), 0);
@@ -126,6 +128,7 @@ py::dict TpcConfigs::getMetricDict() {
     metric_dict["trigger_source"] = trigger_source_;
     metric_dict["software_trigger_rate_hz"] = software_trigger_rate_hz_;
     metric_dict["tpc_dead_time"] = tpc_dead_time_;
+    metric_dict["light_trig_prescale"] = light_trig_prescale_;
 
     metric_dict["prescale"] = array_to_numpy_array_1d(prescale_);
     metric_dict["disc_threshold_0"] = array_to_numpy_array_1d(disc_threshold_0_);
@@ -151,6 +154,7 @@ void TpcConfigs::setMetricDict(py::dict &config) {
     AssignScalar(trigger_source_, config, "trigger_source");
     AssignScalar(software_trigger_rate_hz_, config, "software_trigger_rate_hz");
     AssignScalar(tpc_dead_time_, config, "tpc_dead_time");
+    AssignScalar(light_trig_prescale_, config, "light_trig_prescale");
 
     AssignArray(prescale_, config, "prescale");
     AssignArray(disc_threshold_0_, config, "disc_threshold_0");
@@ -176,6 +180,7 @@ void TpcConfigs::print() const {
     std::cout << "  trigger_source: " << trigger_source_ << std::endl;
     std::cout << "  software_trigger_rate_hz: " << software_trigger_rate_hz_ << std::endl;
     std::cout << "  tpc_dead_time: " << tpc_dead_time_ << std::endl;
+    std::cout << "  light_trig_prescale: " << light_trig_prescale_ << std::endl;
 
     auto print_vector = [&](const std::string& name, const auto& arr) {
         std::cout << "  " << name << " (first 10): ";

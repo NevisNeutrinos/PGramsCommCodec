@@ -38,6 +38,7 @@ private:
     int32_t trigger_source_;
     int32_t software_trigger_rate_hz_;
     int32_t tpc_dead_time_;
+    int32_t light_trig_prescale_;
     std::array<int32_t, NUM_PRESCALES> prescale_;
 
     // Discriminator thresholds
@@ -62,7 +63,7 @@ private:
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
-        tpc_dead_time_);
+        tpc_dead_time_, light_trig_prescale_);
     };
 
     auto member_tuple() const {
@@ -70,7 +71,7 @@ private:
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
-        tpc_dead_time_);
+        tpc_dead_time_, light_trig_prescale_);
     };
 
 public:
@@ -199,6 +200,9 @@ public:
 
     int32_t getTpcDeadTime() const { return tpc_dead_time_; }
     void setTpcDeadTime(int32_t v) { tpc_dead_time_ = v; }
+
+    int32_t getLightTrigPrescale() const { return light_trig_prescale_; }
+    void setLightTrigPrescale(int32_t v) { light_trig_prescale_ = v; }
 
     // prescale
     const std::array<int32_t, NUM_PRESCALES>& getPrescale() const { return prescale_; }
