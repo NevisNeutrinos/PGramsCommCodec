@@ -6,7 +6,8 @@
 #include <stdexcept>
 #include <iostream>
 
-TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), readout_state_(0), num_events_upper_(0),
+TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), last_command_(0), last_command_status_(0),
+    readout_state_(0), num_events_upper_(0),
     num_events_lower_(0), event_diff_upper_(0), event_diff_lower_(0), num_dma_loops_upper_(0),
     num_dma_loops_lower_(0), received_mbytes_upper_(0), received_mbytes_lower_(0), avg_event_size_upper_(0),
     avg_event_size_lower_(0), num_files_upper_(0), num_files_lower_(0) {
@@ -16,6 +17,8 @@ TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), readout_state_(0), 
 void TpcReadoutMonitor::clear() {
     error_bit_word_ = 0;
     readout_state_ = 0;
+    last_command_ = 0;
+    last_command_status_ = 0;
     num_events_upper_ = 0;
     num_events_lower_ = 0;
     event_diff_upper_ = 0;
@@ -68,6 +71,8 @@ py::dict TpcReadoutMonitor::getMetricDict() {
     py::dict metric_dict;
     metric_dict["error_bit_word"] = error_bit_word_;
     metric_dict["readout_state"] = readout_state_;
+    metric_dict["last_command"] = last_command_;
+    metric_dict["last_command_status"] = last_command_status_;
     metric_dict["num_events"] = getFullWord(num_events_upper_, num_events_lower_);
     metric_dict["event_diff"] = getFullWord(event_diff_upper_, event_diff_lower_);
     metric_dict["num_dma_loops"] = getFullWord(num_dma_loops_upper_, num_dma_loops_lower_);
@@ -84,6 +89,8 @@ void TpcReadoutMonitor::print() const {
     std::cout << "++++++++++++ TpcReadoutMonitor +++++++++++++" << std::endl;
     std::cout << "  error_bit_word: " << error_bit_word_ << std::endl;
     std::cout << "  readout_state: " << readout_state_ << std::endl;
+    std::cout << "  last_command: " << last_command_ << std::endl;
+    std::cout << "  last_command_status: " << last_command_status_ << std::endl;
     std::cout << "  num_events: " << getFullWord(num_events_upper_, num_events_lower_) << std::endl;
     std::cout << "  event_diff: " << getFullWord(event_diff_upper_, event_diff_lower_) << std::endl;
     std::cout << "  num_dma_loops: " << getFullWord(num_dma_loops_upper_, num_dma_loops_lower_) << std::endl;

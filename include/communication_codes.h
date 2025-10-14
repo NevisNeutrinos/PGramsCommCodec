@@ -68,6 +68,7 @@ enum class CommunicationCodes : uint16_t {
   COL_Query_Hardware_Status = construct_code(0x6, COM_SUBSYSTEM_COL_MSK),
   // Status Link
   COL_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_COL_MSK),
+  COL_Callback = construct_code(0x21, COM_SUBSYSTEM_COL_MSK),
 
   // TOF
   TOF_Start_DAQ = construct_code(0x0, COM_SUBSYSTEM_TOF_MSK),
