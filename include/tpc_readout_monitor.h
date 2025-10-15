@@ -36,10 +36,19 @@ private:
 
     std::array<int32_t, NUM_BOARDS> board_status_;
 
-    // Assign errors to the bits in the error word
-    enum ErrorBits : uint32_t {
-        error1 = 0
-    };
+    // // Assign errors to the bits in the error word
+    // enum ErrorBits : uint32_t {
+    //     daq_state_cmd = 1,
+    //     pcie_license = 1,
+    //     config_load = 2,
+    //     comms_config_load = 3,
+    //     // Do not change these
+    //     pcie_lib_init = 4,
+    //     pcie_card_open = 5,
+    //     pcie_control_buff = 6,
+    //
+    //     xmit_get_config = 7,
+    // };
 
     enum class State : int {
         kIdle = 0,
@@ -72,15 +81,32 @@ private:
 public:
     TpcReadoutMonitor();
 
+    // Assign errors to the bits in the error word
+    enum ErrorBits : uint32_t {
+        daq_state_cmd = 1,
+        pcie_license = 1,
+        config_load = 2,
+        comms_config_load = 3,
+        // Do not change these
+        pcie_lib_init = 4,
+        pcie_card_open = 5,
+        pcie_control_buff = 6,
+        xmit_get_config = 7,
+        lightfem_get_config = 8,
+        chargefem_get_config = 9,
+        trigger_get_config = 9,
+        datahandler_get_config = 10,
+    };
+
     // Helper to set the error word bits
     inline void setErrorBitWord(uint32_t set_bit) { error_bit_word_ |= (0x1 << set_bit); }
     inline static uint32_t getErrorBitWord(uint32_t error_word, uint32_t set_bit) { return error_word & (0x1 << set_bit); }
 
     // Helper struct to allow easy access to the error bits
     struct ErrorWord {
-        uint32_t error1;
+        uint32_t daq_state_cmd;
         ErrorWord(uint32_t word) {
-            error1 = TpcReadoutMonitor::getErrorBitWord(word, ErrorBits::error1);
+            daq_state_cmd = TpcReadoutMonitor::getErrorBitWord(word, ErrorBits::daq_state_cmd);
         }
     };
 

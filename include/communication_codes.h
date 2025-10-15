@@ -56,6 +56,7 @@ enum class CommunicationCodes : uint16_t {
   ORC_Shutdown_All_DAQ = construct_code(0x3, COM_SUBSYSTEM_ORC_MSK),
   ORC_Start_Computer_Status = construct_code(0x4, COM_SUBSYSTEM_ORC_MSK),
   ORC_Stop_Computer_Status = construct_code(0x5, COM_SUBSYSTEM_ORC_MSK),
+  ORC_Init_PCIe_Driver = construct_code(0x6, COM_SUBSYSTEM_ORC_MSK),
 
   //Columbia Readout
   // Command Link
