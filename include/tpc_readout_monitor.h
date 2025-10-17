@@ -36,20 +36,6 @@ private:
 
     std::array<int32_t, NUM_BOARDS> board_status_;
 
-    // // Assign errors to the bits in the error word
-    // enum ErrorBits : uint32_t {
-    //     daq_state_cmd = 1,
-    //     pcie_license = 1,
-    //     config_load = 2,
-    //     comms_config_load = 3,
-    //     // Do not change these
-    //     pcie_lib_init = 4,
-    //     pcie_card_open = 5,
-    //     pcie_control_buff = 6,
-    //
-    //     xmit_get_config = 7,
-    // };
-
     enum class State : int {
         kIdle = 0,
         kConfigured = 1,
@@ -82,33 +68,26 @@ public:
     TpcReadoutMonitor();
 
     // Assign errors to the bits in the error word
-    enum ErrorBits : uint32_t {
+    enum ErrorBits : int32_t {
         daq_state_cmd = 1,
-        pcie_license = 1,
-        config_load = 2,
-        comms_config_load = 3,
+        pcie_license = 2,
+        config_load = 3,
+        comms_config_load = 4,
         // Do not change these
-        pcie_lib_init = 4,
-        pcie_card_open = 5,
-        pcie_control_buff = 6,
-        xmit_get_config = 7,
-        lightfem_get_config = 8,
-        chargefem_get_config = 9,
-        trigger_get_config = 9,
-        datahandler_get_config = 10,
+        pcie_lib_init = 5,
+        pcie_card_open = 6,
+        pcie_control_buff = 7,
+        xmit_get_config = 8,
+        lightfem_get_config = 9,
+        chargefem_get_config = 10,
+        trigger_get_config = 11,
+        datahandler_get_config = 12
     };
 
-    // Helper to set the error word bits
-    inline void setErrorBitWord(uint32_t set_bit) { error_bit_word_ |= (0x1 << set_bit); }
-    inline static uint32_t getErrorBitWord(uint32_t error_word, uint32_t set_bit) { return error_word & (0x1 << set_bit); }
-
-    // Helper struct to allow easy access to the error bits
-    struct ErrorWord {
-        uint32_t daq_state_cmd;
-        ErrorWord(uint32_t word) {
-            daq_state_cmd = TpcReadoutMonitor::getErrorBitWord(word, ErrorBits::daq_state_cmd);
-        }
-    };
+    void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
+    void setErrorBitWord(int32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, error_bit, unset); }
+    void setErrorBitWord(uint32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, static_cast<int32_t>(error_bit), unset); }
+    int32_t getErrorBit(int32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
 
     void clear();
     void print() const;

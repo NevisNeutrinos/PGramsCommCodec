@@ -70,7 +70,7 @@ std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>
     bin_width = static_cast<double>(max_value - min_value) / num_bins;
 
     // Ensure there's enough data for the bins
-    if (std::distance(it, end) < num_bins) {
+    if (static_cast<size_t>(std::distance(it, end)) < bins.size()) {
         throw std::runtime_error("Deserialization failed: not enough data for Histogram bins.");
     }
 

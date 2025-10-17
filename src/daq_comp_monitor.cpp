@@ -3,15 +3,21 @@
 //
 
 #include "../include/daq_comp_monitor.h"
+
+#include <bitset>
 #include <stdexcept>
 #include <iostream>
 
-DaqCompMonitor::DaqCompMonitor() : daq_bit_word_(0), tpc_disk_(0), tof_disk_(0), sys_disk_(0), cpu_usage_(0),
+DaqCompMonitor::DaqCompMonitor() : error_bit_word_(0), last_command_(0), last_command_status_(0), daq_bit_word_(0),
+                                    tpc_disk_(0), tof_disk_(0), sys_disk_(0), cpu_usage_(0),
                                     memory_usage_(0), disk_temp_(0) {
     std::fill(cpu_temp_.begin(), cpu_temp_.end(), 0);
 }
 
 void DaqCompMonitor::clear() {
+    error_bit_word_ = 0;
+    last_command_ = 0;
+    last_command_status_ = 0;
     daq_bit_word_ = 0;
     tpc_disk_ = 0;
     tof_disk_ = 0;
@@ -42,7 +48,7 @@ std::vector<int32_t>::const_iterator DaqCompMonitor::deserialize(std::vector<int
     it = Serializer<DaqCompMonitor>::deserialize_tuple(member_tuple(), begin, end);
 
     // Ensure there's enough data for the bins
-    if (std::distance(it, end) < NUM_CPUS) {
+    if (static_cast<size_t>(std::distance(it, end)) < NUM_CPUS) {
         throw std::runtime_error("Deserialization failed: not enough data for number CPUs.");
     }
 
@@ -57,6 +63,9 @@ std::vector<int32_t>::const_iterator DaqCompMonitor::deserialize(std::vector<int
 py::dict DaqCompMonitor::getMetricDict() {
 
     py::dict metric_dict;
+    metric_dict["error_bit_word"] = error_bit_word_;
+    metric_dict["last_command"] = last_commmand_;
+    metric_dict["last_command_status"] = last_commmand_status_;
     metric_dict["daq_bit_word"] = daq_bit_word_;
     metric_dict["tpc_disk"] = tpc_disk_;
     metric_dict["tof_disk"] = tof_disk_;
@@ -72,7 +81,10 @@ py::dict DaqCompMonitor::getMetricDict() {
 
 void DaqCompMonitor::print() const {
     std::cout << "++++++++++++ DaqCompMonitor +++++++++++++" << std::endl;
-    std::cout << "  daq_bit_word: " << daq_bit_word_ << std::endl;
+    std::cout << "  error_bit_word: " << std::bitset<32>(error_bit_word_) << std::endl;
+    std::cout << "  last_command: " << std::bitset<32>(last_command_) << std::endl;
+    std::cout << "  last_command_status: " << std::bitset<32>(last_command_status_) << std::endl;
+    std::cout << "  daq_bit_word: " << std::bitset<32>(daq_bit_word_) << std::endl;
     std::cout << "  tpc_disk: " << tpc_disk_ << std::endl;
     std::cout << "  tof_disk: " << tof_disk_ << std::endl;
     std::cout << "  sys_disk: " << sys_disk_ << std::endl;

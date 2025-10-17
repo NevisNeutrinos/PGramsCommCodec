@@ -9,7 +9,7 @@
 
 namespace constants {
     namespace daq_computer {
-        constexpr size_t NUM_CPUS = 8;
+        constexpr size_t NUM_CPUS = 6;
     }
     namespace tpc_readout {
         // Expected number of FEMs

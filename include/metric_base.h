@@ -5,8 +5,11 @@
 #ifndef METRIC_BASE_H
 #define METRIC_BASE_H
 
+#include <communication_codes.h>
+#include <iostream>
 #include <vector>
 #include <cstdint>
+#include <limits.h>
 #include <tuple>
 #include <stdexcept>
 #include "constants.h"
@@ -58,6 +61,33 @@ public:
     }
 
     /**
+     * Helper functions to set and access bits in bit words
+     */
+    // Since the type isn't explicitly available for an enum member, cast it to the underlying type
+    template <typename T>
+    static constexpr auto to_underlying(T enum_member) noexcept {
+        return static_cast<std::underlying_type_t<T>>(enum_member);
+    }
+
+    template <typename T>
+    static inline void setBitWord(T &bit_word, T set_bit, bool unset) {
+        if(set_bit >= static_cast<T>(sizeof(T) * CHAR_BIT)) {
+            std::cerr << "Trying to shift a bit beyond the size of the bitword!" << std::endl;
+        }
+        if (unset) bit_word &= ~(0x1 << set_bit);
+        else bit_word |= (0x1 << set_bit);
+    }
+
+    template <typename T>
+    inline static auto getBit(T bit_word, T set_bit) {
+
+        if(set_bit >= static_cast<T>(sizeof(T) * CHAR_BIT)) {
+            std::cerr << "Trying to shift a bit beyond the size of the bitword!" << std::endl;
+        }
+        return bit_word & (0x1 << set_bit);
+    }
+
+    /**
      *  struct to automate the serialize/deserialize the metric classes
      * @tparam T The derived class to be serialized/de-serialized.
      */
@@ -77,9 +107,8 @@ public:
         // Deserialize vector into tuple
         template <typename... Args, typename Iter>
         static Iter deserialize_tuple(std::tuple<Args...> t, Iter it, Iter end) {
-            auto idx = 0;
             auto size = std::distance(it, end);
-            if (size < sizeof...(Args))
+            if (size < static_cast<decltype(size)>(sizeof...(Args)))
                 throw std::runtime_error("Not enough data to deserialize tuple");
 
             std::apply([&](auto&... elems) {
@@ -90,7 +119,7 @@ public:
         }
     };
 
-
+// Python binding functions
 #ifdef USE_PYTHON
     /**
     * @brief Get a map of the metrics with a key giving the name and value giving the metric

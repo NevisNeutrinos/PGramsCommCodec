@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <iostream>
 
-TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), last_command_(0), last_command_status_(0),
-    readout_state_(0), num_events_upper_(0),
+TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), readout_state_(0), last_command_(0),
+    last_command_status_(0), num_events_upper_(0),
     num_events_lower_(0), event_diff_upper_(0), event_diff_lower_(0), num_dma_loops_upper_(0),
     num_dma_loops_lower_(0), received_mbytes_upper_(0), received_mbytes_lower_(0), avg_event_size_upper_(0),
     avg_event_size_lower_(0), num_files_upper_(0), num_files_lower_(0) {
@@ -54,7 +54,7 @@ std::vector<int32_t>::const_iterator TpcReadoutMonitor::deserialize(std::vector<
     it = Serializer<TpcReadoutMonitor>::deserialize_tuple(member_tuple(), begin, end);
 
     // Ensure there's enough data for the bins
-    if (std::distance(it, end) < NUM_BOARDS) {
+    if (static_cast<size_t>(std::distance(it, end)) < NUM_BOARDS) {
         throw std::runtime_error("Deserialization failed: not enough data for Board Status.");
     }
 

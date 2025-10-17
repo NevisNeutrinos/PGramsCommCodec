@@ -33,7 +33,7 @@ std::vector<int32_t>::const_iterator TpcMonitorQuery::deserialize(std::vector<in
     // it = Serializer<LowBwTpcMonitor>::deserialize_tuple(member_tuple(), begin, end);
 
     // Ensure there's enough data for the bins
-    if (std::distance(it, end) < NUM_FEMS) {
+    if (static_cast<size_t>(std::distance(it, end)) < NUM_FEMS) {
         throw std::runtime_error("Deserialization failed: not enough data for Number charge channels.");
     }
 

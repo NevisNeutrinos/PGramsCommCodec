@@ -22,8 +22,8 @@ public:
     void print() const;
     const std::vector<Histogram>& getChargeHistograms() const { return charge_histograms; }
     const std::vector<Histogram>& getLightHistograms() const { return light_histograms; }
-    const void fillChargeChannelHistogram(size_t channel, int32_t word) { charge_histograms.at(channel).fill(word); };
-    const void fillLightChannelHistogram(size_t channel, int32_t word) { light_histograms.at(channel).fill(word); };
+    void fillChargeChannelHistogram(size_t channel, int32_t word) { charge_histograms.at(channel).fill(word); };
+    void fillLightChannelHistogram(size_t channel, int32_t word) { light_histograms.at(channel).fill(word); };
 
     // MetricBase serialize interface implementation
     std::vector<int32_t> serialize() const override;

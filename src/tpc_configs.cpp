@@ -85,7 +85,7 @@ std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t
                                                              std::vector<int32_t>::const_iterator end) {
     auto it = begin;
     // Need scalars first
-    if (std::distance(it, end) < num_members_) {
+    if (static_cast<size_t>(std::distance(it, end)) < num_members_) {
         throw std::runtime_error("Deserialization failed: Words received [" +
             std::to_string(std::distance(it, end)) + "] but requires [" + std::to_string(num_members_) + "]");
     }
@@ -95,7 +95,7 @@ std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t
         using ArrayType = std::decay_t<decltype(arr)>;
         static_assert(std::is_same_v<typename ArrayType::value_type, int32_t>, "Array element type must be int32_t");
 
-        if (std::distance(it, end) < static_cast<long>(arr.size())) {
+        if (static_cast<size_t>(std::distance(it, end)) < arr.size()) {
             throw std::runtime_error("Deserialization failed: not enough data for array.");
         }
         std::copy(it, it + arr.size(), arr.begin());
