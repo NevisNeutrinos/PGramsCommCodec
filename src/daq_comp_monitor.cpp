@@ -64,8 +64,8 @@ py::dict DaqCompMonitor::getMetricDict() {
 
     py::dict metric_dict;
     metric_dict["error_bit_word"] = error_bit_word_;
-    metric_dict["last_command"] = last_commmand_;
-    metric_dict["last_command_status"] = last_commmand_status_;
+    metric_dict["last_command"] = last_command_;
+    metric_dict["last_command_status"] = last_command_status_;
     metric_dict["daq_bit_word"] = daq_bit_word_;
     metric_dict["tpc_disk"] = tpc_disk_;
     metric_dict["tof_disk"] = tof_disk_;
