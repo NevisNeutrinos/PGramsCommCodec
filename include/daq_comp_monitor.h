@@ -24,7 +24,7 @@ private:
     std::array<int32_t, NUM_CPUS> cpu_temp_;
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 7;
+    size_t num_members_ = 10;
     auto member_tuple() {
         return std::tie(error_bit_word_, last_command_, last_command_status_, daq_bit_word_, tpc_disk_,
                         tof_disk_, sys_disk_, cpu_usage_, memory_usage_, disk_temp_);
