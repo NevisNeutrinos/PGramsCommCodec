@@ -74,6 +74,9 @@ PYBIND11_MODULE(datamon, m) {
         .value("OrcExecCpuRestart", pgrams::communication::CommunicationCodes::ORC_Exec_CPU_Restart)
         .value("OrcExecCpuShutdown", pgrams::communication::CommunicationCodes::ORC_Exec_CPU_Shutdown)
         .value("OrcPcieInit", pgrams::communication::CommunicationCodes::ORC_Init_PCIe_Driver)
+        .value("OrcBootMonitor", pgrams::communication::CommunicationCodes::ORC_Boot_Monitor)
+        .value("OrcShutdownMonitor", pgrams::communication::CommunicationCodes::ORC_Shutdown_Monitor)
+
         // TPC Readout
         .value("ColConfigure", pgrams::communication::CommunicationCodes::COL_Configure)
         .value("ColStartRun", pgrams::communication::CommunicationCodes::COL_Start_Run)
