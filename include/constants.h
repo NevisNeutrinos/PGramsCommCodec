@@ -18,8 +18,8 @@ namespace constants {
         // Trigger constants
         constexpr size_t NUM_PRESCALES = 9;
         // Expected number of channels and samples per channel for charge & light
-        constexpr size_t NUM_CHARGE_CHANNELS = 64;
-        constexpr size_t NUM_LIGHT_CHANNELS = 40;
+        constexpr size_t NUM_CHARGE_CHANNELS = 192;
+        constexpr size_t NUM_LIGHT_CHANNELS = 36;
         constexpr size_t NUM_CHARGE_SAMPLES = 763;
         constexpr size_t NUM_LIGHT_SAMPLES = 30;
         // Number of bins in the readout histograms
