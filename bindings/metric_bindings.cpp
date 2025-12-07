@@ -84,6 +84,7 @@ PYBIND11_MODULE(datamon, m) {
         .value("ColResetRun", pgrams::communication::CommunicationCodes::COL_Reset_Run)
         .value("ColQueryHardwareStatus", pgrams::communication::CommunicationCodes::COL_Query_Hardware_Status)
         .value("ColHardwareStatus", pgrams::communication::CommunicationCodes::COL_Hardware_Status)
+        .value("ColQueryLBData", pgrams::communication::CommunicationCodes::COL_Query_LB_Data)
         .export_values();
 
     // Bind the Histogram class
@@ -115,14 +116,7 @@ PYBIND11_MODULE(datamon, m) {
     py::class_<LowBwTpcMonitor, MetricBase>(m, "LowBwTpcMonitor")
         .def(py::init<>())
         .def("clear", &LowBwTpcMonitor::clear)
-        .def("serialize", &LowBwTpcMonitor::serialize)
-        .def("set_num_fems", &LowBwTpcMonitor::setNumFems)
-        .def("set_charge_channel_samples", &LowBwTpcMonitor::setChargeChannelSamples)
-
-        .def_property_readonly("num_fems", &LowBwTpcMonitor::getNumFems)
-        .def_property_readonly("num_charge_channels", &LowBwTpcMonitor::getNumChargeChannels)
-        .def_property_readonly("num_light_channels", &LowBwTpcMonitor::getNumLightChannels)
-        .def_property_readonly("charge_channel_num_samples", &LowBwTpcMonitor::getChargeChannelNumSamples);
+        .def("serialize", &LowBwTpcMonitor::serialize);
 
     // Bind the TpcConfigs class
     py::class_<TpcConfigs, MetricBase>(m, "TpcConfig")
