@@ -16,6 +16,7 @@ private:
     int32_t readout_state_;
     int32_t last_command_;
     int32_t last_command_status_;
+    int32_t run_number_;
 
     int32_t num_events_upper_;
     int32_t num_events_lower_;
@@ -51,10 +52,10 @@ private:
       };
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 19;
+    size_t num_members_ = 20;
     auto member_tuple() {
         return std::tie(error_bit_word_, num_rw_buffer_overflow_, readout_state_, last_command_, last_command_status_,
-                      num_events_upper_, num_events_lower_,
+                      run_number_, num_events_upper_, num_events_lower_,
                       num_dma_loops_upper_, num_dma_loops_lower_, received_mbytes_upper_,
                       received_mbytes_lower_, avg_event_size_upper_, avg_event_size_lower_, num_files_upper_,
                       num_files_lower_, num_event_start_marker_upper_, num_event_start_marker_lower_,
@@ -62,7 +63,7 @@ private:
     };
     auto member_tuple() const {
         return std::tie(error_bit_word_, num_rw_buffer_overflow_, readout_state_, last_command_, last_command_status_,
-                        num_events_upper_, num_events_lower_,
+                        run_number_, num_events_upper_, num_events_lower_,
                         num_dma_loops_upper_, num_dma_loops_lower_, received_mbytes_upper_,
                         received_mbytes_lower_, avg_event_size_upper_, avg_event_size_lower_, num_files_upper_,
                         num_files_lower_, num_event_start_marker_upper_, num_event_start_marker_lower_,
@@ -106,6 +107,7 @@ public:
     void setReadoutState(int32_t state) { readout_state_ = state; };
     void setLastCommand(int32_t command) { last_command_ = command; };
     void setLastCommandStatus(int32_t command_status) { last_command_status_ = command_status; };
+    void setRunNumber(int32_t run_number) { run_number_ = run_number; };
     void setNumEvents(size_t num_events) {
       num_events_upper_ = getUpper32(num_events);
       num_events_lower_ = getLower32(num_events);
@@ -149,6 +151,7 @@ public:
     int32_t getReadoutState() const { return readout_state_; }
     int32_t getLastCommand() const { return last_command_; }
     int32_t getLastCommandStatus() const { return last_command_status_; }
+    int32_t getRunNumber() const { return run_number_; }
     size_t getNumEvents() const { return getFullWord(num_events_upper_, num_events_lower_); }
     // size_t getEventDiff() const { return getFullWord(num_events_upper_, num_events_lower_); }
     size_t getNumDmaLoops() const { return getFullWord(num_dma_loops_upper_, num_dma_loops_lower_); }
