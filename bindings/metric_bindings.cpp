@@ -11,6 +11,8 @@
 #include "../include/tpc_configs.h"
 #include "../include/daq_comp_monitor.h"
 #include "../include/tpc_readout_monitor.h"
+#include "../include/tpc_monitor_charge_event.h"
+#include "../include/tpc_monitor_light_event.h"
 #include "../include/communication_codes.h"
 
 namespace py = pybind11;
@@ -87,6 +89,7 @@ PYBIND11_MODULE(datamon, m) {
         .value("ColQueryHardwareStatus", pgrams::communication::CommunicationCodes::COL_Query_Hardware_Status)
         .value("ColHardwareStatus", pgrams::communication::CommunicationCodes::COL_Hardware_Status)
         .value("ColQueryLBData", pgrams::communication::CommunicationCodes::COL_Query_LB_Data)
+        .value("ColQueryEventData", pgrams::communication::CommunicationCodes::COL_Query_Event_Data)
         .export_values();
 
     // Bind the Histogram class
@@ -119,6 +122,18 @@ PYBIND11_MODULE(datamon, m) {
         .def(py::init<>())
         .def("clear", &LowBwTpcMonitor::clear)
         .def("serialize", &LowBwTpcMonitor::serialize);
+
+    // Bind the TpcMonitorChargeEvent class
+    py::class_<TpcMonitorChargeEvent, MetricBase>(m, "TpcMonitorChargeEvent")
+        .def(py::init<>())
+        .def("clear", &TpcMonitorChargeEvent::clear)
+        .def("serialize", &TpcMonitorChargeEvent::serialize);
+
+    // Bind the TpcMonitorLightEvent class
+    py::class_<TpcMonitorLightEvent, MetricBase>(m, "TpcMonitorLightEvent")
+        .def(py::init<>())
+        .def("clear", &TpcMonitorLightEvent::clear)
+        .def("serialize", &TpcMonitorLightEvent::serialize);
 
     // Bind the TpcConfigs class
     py::class_<TpcConfigs, MetricBase>(m, "TpcConfig")

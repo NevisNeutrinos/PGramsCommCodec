@@ -12,10 +12,6 @@ using namespace constants::tpc_readout;
 class LowBwTpcMonitor : public MetricBase {
 private:
     // Metrics
-    static constexpr double packed_words_divisor_ = 0.5;
-    static constexpr size_t DOUBLE_PACK_CHARGE_CH = packed_words_divisor_ * NUM_CHARGE_CHANNELS;
-    static constexpr size_t DOUBLE_PACK_LIGHT_CH = packed_words_divisor_ * NUM_LIGHT_CHANNELS;
-
     int32_t error_bit_word_;
     std::array<int32_t, DOUBLE_PACK_CHARGE_CH> charge_baselines_;
     std::array<int32_t, DOUBLE_PACK_CHARGE_CH> charge_rms_;
