@@ -44,7 +44,7 @@ std::vector<int32_t>::const_iterator TpcMonitorLightEvent::deserialize(std::vect
 }
 
 #ifdef USE_PYTHON
-py::dict TpcMonitorEvents::getMetricDict() {
+py::dict TpcMonitorLightEvent::getMetricDict() {
 
     py::dict metric_dict;
     metric_dict["channel_number"] = channel_number_;

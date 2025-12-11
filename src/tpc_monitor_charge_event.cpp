@@ -44,11 +44,11 @@ std::vector<int32_t>::const_iterator TpcMonitorChargeEvent::deserialize(std::vec
 }
 
 #ifdef USE_PYTHON
-py::dict TpcMonitorEvents::getMetricDict() {
+py::dict TpcMonitorChargeEvent::getMetricDict() {
 
     py::dict metric_dict;
     metric_dict["channel_number"] = channel_number_;
-    metric_dict["charge_samples"] = vector_to_numpy_array_1d(UnPackDoubleWords(charge_baselines_));
+    metric_dict["charge_samples"] = vector_to_numpy_array_1d(UnPackDoubleWords(charge_samples_));
 
     return metric_dict;
 }

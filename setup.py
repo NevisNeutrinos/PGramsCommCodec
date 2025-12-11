@@ -12,7 +12,9 @@ sources = [
     'src/tpc_monitor_lbw.cpp',
     'src/tpc_configs.cpp',
     'src/daq_comp_monitor.cpp',
-    'src/tpc_readout_monitor.cpp'
+    'src/tpc_readout_monitor.cpp',
+    'src/tpc_monitor_charge_event.cpp',
+    'src/tpc_monitor_light_event.cpp'
 ]
 
 ext_modules = [
