@@ -30,15 +30,15 @@ constexpr size_t LIGHT_BINS = 20;
  */
 struct Histogram {
     // Configuration
-    int32_t min_value;
-    int32_t max_value;
-    int32_t num_bins;
+    uint32_t min_value;
+    uint32_t max_value;
+    uint32_t num_bins;
     double bin_width;
 
     // Data storage
-    std::vector<int32_t> bins;
-    int32_t below_range_count;
-    int32_t above_range_count;
+    std::vector<uint32_t> bins;
+    uint32_t below_range_count;
+    uint32_t above_range_count;
 
     /**
      * @brief Constructs a Histogram with a defined range and bin count.
@@ -47,7 +47,7 @@ struct Histogram {
      * @param bins_count The number of bins to create within the range.
      * @throws std::invalid_argument if max <= min or bins_count is zero or negative.
      */
-    Histogram(int32_t min, int32_t max, int32_t bins_count)
+    Histogram(uint32_t min, uint32_t max, uint32_t bins_count)
         : min_value(min), max_value(max), num_bins(bins_count), below_range_count(0), above_range_count(0) {
         if (max <= min) {
             throw std::invalid_argument("max_value must be greater than min_value.");
@@ -59,7 +59,7 @@ struct Histogram {
         bin_width = static_cast<double>(max_value - min_value) / num_bins;
     }
 
-    void fill(int32_t value) {
+    void fill(uint32_t value) {
         if (value < min_value) {
             below_range_count++;
         } else if (value >= max_value) {
@@ -78,9 +78,9 @@ struct Histogram {
         for (auto &bin : bins) bin = 0;
     }
 
-    std::vector<int32_t> serialize() const {
+    std::vector<uint32_t> serialize() const {
         // Start with the configuration metadata
-        std::vector<int32_t> serialized_data = {
+        std::vector<uint32_t> serialized_data = {
             min_value,
             max_value,
             num_bins,
@@ -92,15 +92,15 @@ struct Histogram {
         return serialized_data;
     }
 
-    static Histogram deserialize(const std::vector<int32_t>& data) {
+    static Histogram deserialize(const std::vector<uint32_t>& data) {
         // The vector must contain at least the 5 metadata fields.
         if (data.size() < 5) {
             throw std::runtime_error("Deserialization failed: data is too short for metadata.");
         }
 
-        int32_t min_val = data[0];
-        int32_t max_val = data[1];
-        int32_t bins_count = data[2];
+        uint32_t min_val = data[0];
+        uint32_t max_val = data[1];
+        uint32_t bins_count = data[2];
 
         // Check if the total size matches the expected size from metadata.
         if (data.size() != 5 + static_cast<size_t>(bins_count)) {
@@ -139,11 +139,11 @@ struct Histogram {
 
 struct LowBwTpcMonitor {
 
-    int32_t num_fems;
-    int32_t num_charge_channels;
-    int32_t num_light_channels;
+    uint32_t num_fems;
+    uint32_t num_charge_channels;
+    uint32_t num_light_channels;
 
-    std::vector<int32_t> charge_channel_num_samples = std::vector<int32_t>(NUM_CHARGE_CHANNELS,0);
+    std::vector<uint32_t> charge_channel_num_samples = std::vector<uint32_t>(NUM_CHARGE_CHANNELS,0);
 
     void clear() {
         num_fems = 0;
@@ -152,9 +152,9 @@ struct LowBwTpcMonitor {
         for (auto &ch : charge_channel_num_samples) ch = 0;
     }
 
-    std::vector<int32_t> serialize() const {
+    std::vector<uint32_t> serialize() const {
         // Start with the configuration metadata
-        std::vector<int32_t> serialized_data = {
+        std::vector<uint32_t> serialized_data = {
             num_fems,
             num_charge_channels,
             num_light_channels
@@ -167,7 +167,7 @@ struct LowBwTpcMonitor {
         return serialized_data;
     }
 
-    static LowBwTpcMonitor deserialize(const std::vector<int32_t>& data) {
+    static LowBwTpcMonitor deserialize(const std::vector<uint32_t>& data) {
 
         LowBwTpcMonitor metrics{};
         size_t word_count = 0;
@@ -197,16 +197,16 @@ struct TpcMonitor {
 
     // Since it is complicated to pass custom C++ objects to python we will pass the
     // histograms in serialized form which can be deserialized using the Histogram class.
-    std::vector<std::vector<int32_t>> get_charge_hists() {
-        std::vector<std::vector<int32_t>> charge_hists;
+    std::vector<std::vector<uint32_t>> get_charge_hists() {
+        std::vector<std::vector<uint32_t>> charge_hists;
         for (const auto& hist : charge_histograms) {
             charge_hists.emplace_back(hist.serialize());
         }
         return charge_hists;
     }
 
-    std::vector<std::vector<int32_t>> get_light_hists() {
-        std::vector<std::vector<int32_t>> light_hists;
+    std::vector<std::vector<uint32_t>> get_light_hists() {
+        std::vector<std::vector<uint32_t>> light_hists;
         for (const auto& hist : light_histograms) {
             light_hists.emplace_back(hist.serialize());
         }
@@ -218,9 +218,9 @@ struct TpcMonitor {
         for (auto &hist : light_histograms) hist.clear();
     }
 
-    std::vector<int32_t> serialize() const {
+    std::vector<uint32_t> serialize() const {
 
-        std::vector<int32_t> serialized_data;
+        std::vector<uint32_t> serialized_data;
 
         for (const auto& hist : charge_histograms) {
             auto tmp = hist.serialize();
@@ -234,7 +234,7 @@ struct TpcMonitor {
         return serialized_data;
     }
 
-    static void deserialize_hist(std::vector<int32_t>::const_iterator it, std::vector<Histogram> &hists,
+    static void deserialize_hist(std::vector<uint32_t>::const_iterator it, std::vector<Histogram> &hists,
                                        const size_t num_words, size_t num_ch) {
         for(size_t ch = 0; ch < num_ch; ++ch) {
             hists.at(ch) = Histogram::deserialize({it, it + num_words});
@@ -242,7 +242,7 @@ struct TpcMonitor {
         }
     }
 
-    static TpcMonitor deserialize(const std::vector<int32_t>& data) {
+    static TpcMonitor deserialize(const std::vector<uint32_t>& data) {
 
         TpcMonitor metrics{};
 

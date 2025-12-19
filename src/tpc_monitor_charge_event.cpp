@@ -13,8 +13,8 @@ void TpcMonitorChargeEvent::clear() {
     std::fill(charge_samples_.begin(), charge_samples_.end(), 0);
 }
 
-std::vector<int32_t> TpcMonitorChargeEvent::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> TpcMonitorChargeEvent::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Reserve space for efficiency
     serialized_data.reserve(num_members_);
     auto data = Serializer<TpcMonitorChargeEvent>::serialize_tuple(member_tuple());
@@ -26,8 +26,8 @@ std::vector<int32_t> TpcMonitorChargeEvent::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator TpcMonitorChargeEvent::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                            std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator TpcMonitorChargeEvent::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                            std::vector<uint32_t>::const_iterator end) {
     auto it = begin;
     it = Serializer<TpcMonitorChargeEvent>::deserialize_tuple(member_tuple(), begin, end);
 

@@ -12,7 +12,7 @@ Histogram::Histogram() : min_value(0), max_value(1), num_bins(1), bin_width(1.0)
     bins.resize(num_bins, 0);
 }
 
-Histogram::Histogram(int32_t min, int32_t max, int32_t bins_count)
+Histogram::Histogram(uint32_t min, uint32_t max, uint32_t bins_count)
     : min_value(min), max_value(max), num_bins(bins_count),
       below_range_count(0), above_range_count(0) {
     if (max <= min) {
@@ -25,7 +25,7 @@ Histogram::Histogram(int32_t min, int32_t max, int32_t bins_count)
     bin_width = static_cast<double>(max_value - min_value) / num_bins;
 }
 
-void Histogram::fill(int32_t value) {
+void Histogram::fill(uint32_t value) {
     if (value < min_value) {
         below_range_count++;
     } else if (value >= max_value) {
@@ -44,8 +44,8 @@ void Histogram::clear() {
     above_range_count = 0;
 }
 
-std::vector<int32_t> Histogram::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> Histogram::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Reserve space for efficiency
     serialized_data.reserve(num_members_ + bins.size());
 
@@ -57,8 +57,8 @@ std::vector<int32_t> Histogram::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator Histogram::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                            std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator Histogram::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                            std::vector<uint32_t>::const_iterator end) {
     auto it = begin;
     it = Serializer<Histogram>::deserialize_tuple(member_tuple(), begin, end);
 

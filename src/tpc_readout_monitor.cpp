@@ -42,8 +42,8 @@ void TpcReadoutMonitor::clear() {
     std::fill(board_status_.begin(), board_status_.end(), 0);
 }
 
-std::vector<int32_t> TpcReadoutMonitor::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> TpcReadoutMonitor::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Reserve space for efficiency
     serialized_data.reserve(num_members_ + NUM_BOARDS);
 
@@ -55,8 +55,8 @@ std::vector<int32_t> TpcReadoutMonitor::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator TpcReadoutMonitor::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                            std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator TpcReadoutMonitor::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                            std::vector<uint32_t>::const_iterator end) {
 
     auto it = begin;
     it = Serializer<TpcReadoutMonitor>::deserialize_tuple(member_tuple(), begin, end);

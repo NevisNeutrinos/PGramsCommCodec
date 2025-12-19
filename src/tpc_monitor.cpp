@@ -16,8 +16,8 @@ void TpcMonitor::clear() {
     for (auto& hist : light_histograms) hist.clear();
 }
 
-std::vector<int32_t> TpcMonitor::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> TpcMonitor::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Serialize each member object and append its data
     for (const auto& hist : charge_histograms) {
         auto hist_data = hist.serialize();
@@ -32,8 +32,8 @@ std::vector<int32_t> TpcMonitor::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator TpcMonitor::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                             std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator TpcMonitor::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                             std::vector<uint32_t>::const_iterator end) {
     auto it = begin;
     // Let each histogram deserialize its own part of the data stream
     for (auto& hist : charge_histograms) {

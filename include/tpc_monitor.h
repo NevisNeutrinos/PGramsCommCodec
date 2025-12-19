@@ -12,8 +12,8 @@ class TpcMonitor : public MetricBase {
 private:
     std::vector<Histogram> charge_histograms;
     std::vector<Histogram> light_histograms;
-    std::vector<int32_t> channel_mean;
-    std::vector<int32_t> channel_stddev;
+    std::vector<uint32_t> channel_mean;
+    std::vector<uint32_t> channel_stddev;
 
 public:
     TpcMonitor();
@@ -22,13 +22,13 @@ public:
     void print() const;
     const std::vector<Histogram>& getChargeHistograms() const { return charge_histograms; }
     const std::vector<Histogram>& getLightHistograms() const { return light_histograms; }
-    void fillChargeChannelHistogram(size_t channel, int32_t word) { charge_histograms.at(channel).fill(word); };
-    void fillLightChannelHistogram(size_t channel, int32_t word) { light_histograms.at(channel).fill(word); };
+    void fillChargeChannelHistogram(size_t channel, uint32_t word) { charge_histograms.at(channel).fill(word); };
+    void fillLightChannelHistogram(size_t channel, uint32_t word) { light_histograms.at(channel).fill(word); };
 
     // MetricBase serialize interface implementation
-    std::vector<int32_t> serialize() const override;
-    std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
-                                                     std::vector<int32_t>::const_iterator end) override;
+    std::vector<uint32_t> serialize() const override;
+    std::vector<uint32_t>::const_iterator deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                     std::vector<uint32_t>::const_iterator end) override;
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;
 #endif

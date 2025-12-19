@@ -13,7 +13,7 @@ class TpcMonitorQuery : public MetricBase {
 private:
 
     // std::array<uint32_t, NUM_CHARGE_CHANNELS>
-    std::array<int32_t, NUM_FEMS> fem_slots_;
+    std::array<uint32_t, NUM_FEMS> fem_slots_;
 
 public:
 
@@ -25,12 +25,12 @@ public:
     void print() const;
 
     // --- Getter Methods ---
-    const std::array<int32_t, NUM_FEMS>& getFemSlots() const { return fem_slots_; }
+    const std::array<uint32_t, NUM_FEMS>& getFemSlots() const { return fem_slots_; }
 
     // MetricBase interface implementation
-    std::vector<int32_t> serialize() const override;
-    std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
-                                                     std::vector<int32_t>::const_iterator end) override;
+    std::vector<uint32_t> serialize() const override;
+    std::vector<uint32_t>::const_iterator deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                     std::vector<uint32_t>::const_iterator end) override;
 
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;

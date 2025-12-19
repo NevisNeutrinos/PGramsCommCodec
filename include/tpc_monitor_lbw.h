@@ -12,13 +12,13 @@ using namespace constants::tpc_readout;
 class LowBwTpcMonitor : public MetricBase {
 private:
     // Metrics
-    int32_t error_bit_word_;
-    std::array<int32_t, DOUBLE_PACK_CHARGE_CH> charge_baselines_;
-    std::array<int32_t, DOUBLE_PACK_CHARGE_CH> charge_rms_;
-    std::array<int32_t, DOUBLE_PACK_CHARGE_CH> charge_avg_num_hits_;
-    std::array<int32_t, DOUBLE_PACK_LIGHT_CH> light_baselines_;
-    std::array<int32_t, DOUBLE_PACK_LIGHT_CH> light_rms_;
-    std::array<int32_t, DOUBLE_PACK_LIGHT_CH> light_avg_num_rois_;
+    uint32_t error_bit_word_;
+    std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_baselines_;
+    std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_rms_;
+    std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_avg_num_hits_;
+    std::array<uint32_t, DOUBLE_PACK_LIGHT_CH> light_baselines_;
+    std::array<uint32_t, DOUBLE_PACK_LIGHT_CH> light_rms_;
+    std::array<uint32_t, DOUBLE_PACK_LIGHT_CH> light_avg_num_rois_;
 
     // Assign errors to the bits in the error word
     enum ErrorBits : uint32_t {
@@ -62,7 +62,7 @@ public:
     void print();
 
     template<size_t N, size_t M>
-    void PackDoubleWords(std::array<int32_t, N> &source_array, std::array<int32_t, M> &dest_array) {
+    void PackDoubleWords(std::array<uint32_t, N> &source_array, std::array<uint32_t, M> &dest_array) {
         // Packing two 16b per 32b words with i+1 in upper and i in the lower bits
         for (size_t i = 0; i < M; i++) {
             dest_array[i] = ((source_array[2 * i + 1]  & 0xFFFF) << 16) + (source_array[2 * i] & 0xFFFF);
@@ -70,10 +70,10 @@ public:
     }
 
     template<size_t M>
-    std::vector<int32_t> UnPackDoubleWords(std::array<int32_t, M> &source_array) {
+    std::vector<uint32_t> UnPackDoubleWords(std::array<uint32_t, M> &source_array) {
         // Unpacking two 16b per 32b words with i+1 in upper and i in the lower bits
-        // std::array<int32_t, 2*M> dest_array;
-        std::vector<int32_t> dest_array;
+        // std::array<uint32_t, 2*M> dest_array;
+        std::vector<uint32_t> dest_array;
         dest_array.resize(2 * M);
         for (size_t i = 0; i < M; i++) {
             dest_array[2 * i] = source_array[i] & 0xFFFF;
@@ -99,38 +99,38 @@ public:
     }
 
     // Public setters for populating data
-    void setChargeBaselines(std::array<int32_t, NUM_CHARGE_CHANNELS> &baselines) {
+    void setChargeBaselines(std::array<uint32_t, NUM_CHARGE_CHANNELS> &baselines) {
         PackDoubleWords(baselines, charge_baselines_);
     }
-    void setChargeRms(std::array<int32_t, NUM_CHARGE_CHANNELS> &rms) {
+    void setChargeRms(std::array<uint32_t, NUM_CHARGE_CHANNELS> &rms) {
         PackDoubleWords(rms, charge_rms_);
     }
-    void setAvgNumHits(std::array<int32_t, NUM_CHARGE_CHANNELS> &hits) {
+    void setAvgNumHits(std::array<uint32_t, NUM_CHARGE_CHANNELS> &hits) {
         PackDoubleWords(hits, charge_avg_num_hits_);
     }
-    void setLightBaselines(std::array<int32_t, NUM_LIGHT_CHANNELS> &baselines) {
+    void setLightBaselines(std::array<uint32_t, NUM_LIGHT_CHANNELS> &baselines) {
         PackDoubleWords(baselines, light_baselines_);
     }
-    void setLightRms(std::array<int32_t, NUM_LIGHT_CHANNELS> &rms) {
+    void setLightRms(std::array<uint32_t, NUM_LIGHT_CHANNELS> &rms) {
         PackDoubleWords(rms, light_rms_);
     }
-    void setLightAvgNumRois(std::array<int32_t, NUM_LIGHT_CHANNELS> &rois) {
+    void setLightAvgNumRois(std::array<uint32_t, NUM_LIGHT_CHANNELS> &rois) {
         PackDoubleWords(rois, light_avg_num_rois_);
     }
 
     // --- Getter Methods ---
-    const std::array<int32_t, DOUBLE_PACK_CHARGE_CH>& getChargeBaselines() const { return charge_baselines_; }
-    const std::array<int32_t, DOUBLE_PACK_CHARGE_CH>& getChargeRms() const { return charge_rms_; }
-    const std::array<int32_t, DOUBLE_PACK_CHARGE_CH>& getAvgNumHits() const { return charge_avg_num_hits_; }
+    const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getChargeBaselines() const { return charge_baselines_; }
+    const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getChargeRms() const { return charge_rms_; }
+    const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getAvgNumHits() const { return charge_avg_num_hits_; }
 
-    const std::array<int32_t, DOUBLE_PACK_LIGHT_CH>& getLightBaselines() const { return light_baselines_; }
-    const std::array<int32_t, DOUBLE_PACK_LIGHT_CH>& getLightRms() const { return light_rms_; }
-    const std::array<int32_t, DOUBLE_PACK_LIGHT_CH>& getLightAvgNumRois() const { return light_avg_num_rois_; }
+    const std::array<uint32_t, DOUBLE_PACK_LIGHT_CH>& getLightBaselines() const { return light_baselines_; }
+    const std::array<uint32_t, DOUBLE_PACK_LIGHT_CH>& getLightRms() const { return light_rms_; }
+    const std::array<uint32_t, DOUBLE_PACK_LIGHT_CH>& getLightAvgNumRois() const { return light_avg_num_rois_; }
 
     // MetricBase interface implementation
-    std::vector<int32_t> serialize() const override;
-    std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
-                                                     std::vector<int32_t>::const_iterator end) override;
+    std::vector<uint32_t> serialize() const override;
+    std::vector<uint32_t>::const_iterator deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                     std::vector<uint32_t>::const_iterator end) override;
 
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;

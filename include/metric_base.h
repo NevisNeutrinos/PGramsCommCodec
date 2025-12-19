@@ -39,7 +39,7 @@ public:
      * @brief Serializes the object's state into a vector of 32-bit integers.
      * @return A vector containing the serialized data.
      */
-    virtual std::vector<int32_t> serialize() const = 0;
+    virtual std::vector<uint32_t> serialize() const = 0;
 
     /**
      * @brief Deserializes data from an iterator and populates the object.
@@ -47,8 +47,8 @@ public:
      * @param end A const iterator to the end of the data range.
      * @return An iterator pointing to the position after the last consumed element.
      */
-    virtual std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
-                                                             std::vector<int32_t>::const_iterator end) = 0;
+    virtual std::vector<uint32_t>::const_iterator deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                             std::vector<uint32_t>::const_iterator end) = 0;
 
     /**
      * @brief Deserializes the object from a complete vector of data.
@@ -56,7 +56,7 @@ public:
      * making it easier to use with Python bindings.
      * @param data The vector containing the data to deserialize.
      */
-    void deserialize(const std::vector<int32_t>& data) {
+    void deserialize(const std::vector<uint32_t>& data) {
         deserialize(data.begin(), data.end());
     }
 
@@ -95,11 +95,11 @@ public:
     struct Serializer {
         // Convert tuple of ints to vector
         template <typename... Args>
-        static std::vector<int32_t> serialize_tuple(const std::tuple<Args...> t) {
-            std::vector<int32_t> result;
+        static std::vector<uint32_t> serialize_tuple(const std::tuple<Args...> t) {
+            std::vector<uint32_t> result;
             result.reserve(sizeof...(Args));
             std::apply([&](const auto&... elems) {
-                ((result.push_back(static_cast<int32_t>(elems))), ...);
+                ((result.push_back(static_cast<uint32_t>(elems))), ...);
             }, t);
             return result;
         }

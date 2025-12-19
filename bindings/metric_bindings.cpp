@@ -24,20 +24,20 @@ public:
     // Inherit constructors
     using MetricBase::MetricBase;
 
-    std::vector<int32_t> serialize() const override {
+    std::vector<uint32_t> serialize() const override {
         PYBIND11_OVERRIDE_PURE(
-            std::vector<int32_t>, /* Return type */
+            std::vector<uint32_t>, /* Return type */
             MetricBase,           /* Parent class */
             serialize             /* Function name */
         );
     }
 
     // Trampoline for the pure virtual deserialize
-    std::vector<int32_t>::const_iterator deserialize(
-        std::vector<int32_t>::const_iterator begin,
-        std::vector<int32_t>::const_iterator end) override {
+    std::vector<uint32_t>::const_iterator deserialize(
+        std::vector<uint32_t>::const_iterator begin,
+        std::vector<uint32_t>::const_iterator end) override {
         PYBIND11_OVERRIDE_PURE(
-            std::vector<int32_t>::const_iterator, /* Return type */
+            std::vector<uint32_t>::const_iterator, /* Return type */
             MetricBase,                           /* Parent class */
             deserialize,                          /* Function name */
             begin, end                            /* Arguments */
@@ -63,7 +63,7 @@ PYBIND11_MODULE(datamon, m) {
     // This just makes pybind11 aware of the type so derived classes can use it.
     py::class_<MetricBase, PyMetricBase /* trampoline */>(m, "MetricBase")
         .def(py::init<>())
-        .def("deserialize", static_cast<void (MetricBase::*)(const std::vector<int32_t>&)>(&MetricBase::deserialize), "Deserialize data from a list of integers.")
+        .def("deserialize", static_cast<void (MetricBase::*)(const std::vector<uint32_t>&)>(&MetricBase::deserialize), "Deserialize data from a list of integers.")
         .def("get_metric_dict", &MetricBase::getMetricDict, "Deserialize data and return a dictionary.");
 
     // Command enum class bindings
@@ -95,7 +95,7 @@ PYBIND11_MODULE(datamon, m) {
     // Bind the Histogram class
     py::class_<Histogram, MetricBase>(m, "Histogram")
         .def(py::init<>()) // Bind the default constructor
-        .def(py::init<int32_t, int32_t, int32_t>()) // Bind the parameterized constructor
+        .def(py::init<uint32_t, uint32_t, uint32_t>()) // Bind the parameterized constructor
         .def("fill", &Histogram::fill, "Fill the histogram with a value")
         .def("clear", &Histogram::clear, "Clear the histogram data")
         .def("serialize", &Histogram::serialize, "Serialize the histogram to a list of ints")

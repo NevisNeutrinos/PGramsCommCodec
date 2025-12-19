@@ -63,8 +63,8 @@ void TpcConfigs::clear() {
 
 }
 
-std::vector<int32_t> TpcConfigs::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> TpcConfigs::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Reserve space for efficiency
     serialized_data.reserve(num_members_ + prescale_.size() + disc_threshold_0_.size() + disc_threshold_1_.size());
 
@@ -81,8 +81,8 @@ std::vector<int32_t> TpcConfigs::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                             std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator TpcConfigs::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                             std::vector<uint32_t>::const_iterator end) {
     auto it = begin;
     // Need scalars first
     if (static_cast<size_t>(std::distance(it, end)) < num_members_) {
@@ -93,7 +93,7 @@ std::vector<int32_t>::const_iterator TpcConfigs::deserialize(std::vector<int32_t
 
     auto copy_array = [&](auto& arr) {
         using ArrayType = std::decay_t<decltype(arr)>;
-        static_assert(std::is_same_v<typename ArrayType::value_type, int32_t>, "Array element type must be int32_t");
+        static_assert(std::is_same_v<typename ArrayType::value_type, uint32_t>, "Array element type must be uint32_t");
 
         if (static_cast<size_t>(std::distance(it, end)) < arr.size()) {
             throw std::runtime_error("Deserialization failed: not enough data for array.");

@@ -12,8 +12,8 @@ void TpcMonitorQuery::clear() {
     std::fill(fem_slots_.begin(), fem_slots_.end(), 0);
 }
 
-std::vector<int32_t> TpcMonitorQuery::serialize() const {
-    std::vector<int32_t> serialized_data;
+std::vector<uint32_t> TpcMonitorQuery::serialize() const {
+    std::vector<uint32_t> serialized_data;
     // Reserve space for efficiency
     size_t num_words = NUM_FEMS;
     serialized_data.reserve(num_words);
@@ -26,8 +26,8 @@ std::vector<int32_t> TpcMonitorQuery::serialize() const {
     return serialized_data;
 }
 
-std::vector<int32_t>::const_iterator TpcMonitorQuery::deserialize(std::vector<int32_t>::const_iterator begin,
-                                                            std::vector<int32_t>::const_iterator end) {
+std::vector<uint32_t>::const_iterator TpcMonitorQuery::deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                            std::vector<uint32_t>::const_iterator end) {
 
     auto it = begin;
     // it = Serializer<LowBwTpcMonitor>::deserialize_tuple(member_tuple(), begin, end);

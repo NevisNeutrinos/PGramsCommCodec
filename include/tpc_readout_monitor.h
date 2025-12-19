@@ -11,38 +11,38 @@ using namespace constants::tpc_readout;
 
 class TpcReadoutMonitor : public MetricBase {
 private:
-    int32_t error_bit_word_;
-    int32_t num_rw_buffer_overflow_;
-    int32_t readout_state_;
-    int32_t last_command_;
-    int32_t last_command_status_;
-    int32_t run_number_;
+    uint32_t error_bit_word_;
+    uint32_t num_rw_buffer_overflow_;
+    uint32_t readout_state_;
+    uint32_t last_command_;
+    uint32_t last_command_status_;
+    uint32_t run_number_;
 
-    int32_t num_events_upper_;
-    int32_t num_events_lower_;
+    uint32_t num_events_upper_;
+    uint32_t num_events_lower_;
 
-    // int32_t event_diff_upper_;
-    // int32_t event_diff_lower_;
+    // uint32_t event_diff_upper_;
+    // uint32_t event_diff_lower_;
 
-    int32_t num_dma_loops_upper_;
-    int32_t num_dma_loops_lower_;
+    uint32_t num_dma_loops_upper_;
+    uint32_t num_dma_loops_lower_;
 
-    int32_t received_mbytes_upper_;
-    int32_t received_mbytes_lower_;
+    uint32_t received_mbytes_upper_;
+    uint32_t received_mbytes_lower_;
 
-    int32_t avg_event_size_upper_;
-    int32_t avg_event_size_lower_;
+    uint32_t avg_event_size_upper_;
+    uint32_t avg_event_size_lower_;
 
-    int32_t num_files_upper_;
-    int32_t num_files_lower_;
+    uint32_t num_files_upper_;
+    uint32_t num_files_lower_;
 
-    int32_t num_event_start_marker_upper_;
-    int32_t num_event_start_marker_lower_;
+    uint32_t num_event_start_marker_upper_;
+    uint32_t num_event_start_marker_lower_;
 
-    int32_t num_event_end_marker_upper_;
-    int32_t num_event_end_marker_lower_;
+    uint32_t num_event_end_marker_upper_;
+    uint32_t num_event_end_marker_lower_;
 
-    std::array<int32_t, NUM_BOARDS> board_status_;
+    std::array<uint32_t, NUM_BOARDS> board_status_;
 
     enum class State : int {
         kIdle = 0,
@@ -70,15 +70,15 @@ private:
                         num_event_end_marker_upper_, num_event_end_marker_lower_);
     };
 
-    static inline int32_t getUpper32(size_t word) { return (word >> 32) & UINT32_MAX; }
-    static inline int32_t getLower32(size_t word) { return word & UINT32_MAX; }
+    static inline uint32_t getUpper32(size_t word) { return (word >> 32) & UINT32_MAX; }
+    static inline uint32_t getLower32(size_t word) { return word & UINT32_MAX; }
     static inline size_t getFullWord(size_t upper_word, size_t lower_word) { return (upper_word << 32) + lower_word; }
 
 public:
     TpcReadoutMonitor();
 
     // Assign errors to the bits in the error word
-    enum ErrorBits : int32_t {
+    enum ErrorBits : uint32_t {
         daq_state_cmd = 1,
         pcie_license = 2,
         config_load = 3,
@@ -95,19 +95,18 @@ public:
     };
 
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
-    void setErrorBitWord(int32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, error_bit, unset); }
-    void setErrorBitWord(uint32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, static_cast<int32_t>(error_bit), unset); }
-    int32_t getErrorBit(int32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
+    void setErrorBitWord(uint32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, error_bit, unset); }
+    uint32_t getErrorBit(uint32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
 
     void clear();
     void print() const;
 
     // Public setters for populating data
-    void setNumRwBufferOverflow(int32_t count) { num_rw_buffer_overflow_ = count; }
-    void setReadoutState(int32_t state) { readout_state_ = state; };
-    void setLastCommand(int32_t command) { last_command_ = command; };
-    void setLastCommandStatus(int32_t command_status) { last_command_status_ = command_status; };
-    void setRunNumber(int32_t run_number) { run_number_ = run_number; };
+    void setNumRwBufferOverflow(uint32_t count) { num_rw_buffer_overflow_ = count; }
+    void setReadoutState(uint32_t state) { readout_state_ = state; };
+    void setLastCommand(uint32_t command) { last_command_ = command; };
+    void setLastCommandStatus(uint32_t command_status) { last_command_status_ = command_status; };
+    void setRunNumber(uint32_t run_number) { run_number_ = run_number; };
     void setNumEvents(size_t num_events) {
       num_events_upper_ = getUpper32(num_events);
       num_events_lower_ = getLower32(num_events);
@@ -140,18 +139,18 @@ public:
          num_event_end_marker_upper_ = getUpper32(end_marker);
          num_event_end_marker_lower_ = getLower32(end_marker);
      }
-     void setBoardStatus(std::vector<int32_t> &board_status) {
+     void setBoardStatus(std::vector<uint32_t> &board_status) {
          for (size_t i = 0; i < board_status.size(); i++) {
              board_status_.at(i) = board_status.at(i);
          }
      }
 
     // --- Getter Methods ---
-    int32_t getNumRwBufferOverflow() const { return num_rw_buffer_overflow_; };
-    int32_t getReadoutState() const { return readout_state_; }
-    int32_t getLastCommand() const { return last_command_; }
-    int32_t getLastCommandStatus() const { return last_command_status_; }
-    int32_t getRunNumber() const { return run_number_; }
+    uint32_t getNumRwBufferOverflow() const { return num_rw_buffer_overflow_; };
+    uint32_t getReadoutState() const { return readout_state_; }
+    uint32_t getLastCommand() const { return last_command_; }
+    uint32_t getLastCommandStatus() const { return last_command_status_; }
+    uint32_t getRunNumber() const { return run_number_; }
     size_t getNumEvents() const { return getFullWord(num_events_upper_, num_events_lower_); }
     // size_t getEventDiff() const { return getFullWord(num_events_upper_, num_events_lower_); }
     size_t getNumDmaLoops() const { return getFullWord(num_dma_loops_upper_, num_dma_loops_lower_); }
@@ -160,12 +159,12 @@ public:
     size_t getNumFiles() const { return getFullWord(num_files_upper_, num_files_lower_); }
     size_t getNumStartMarkers() const { return getFullWord(num_event_start_marker_upper_, num_event_start_marker_lower_); }
     size_t getNumEndMarkers() const { return getFullWord(num_event_end_marker_upper_, num_event_end_marker_lower_); }
-    const std::array<int32_t, NUM_BOARDS> getBoardStatus() const { return board_status_; }
+    const std::array<uint32_t, NUM_BOARDS> getBoardStatus() const { return board_status_; }
 
     // MetricBase interface implementation
-    std::vector<int32_t> serialize() const override;
-    std::vector<int32_t>::const_iterator deserialize(std::vector<int32_t>::const_iterator begin,
-                                                     std::vector<int32_t>::const_iterator end) override;
+    std::vector<uint32_t> serialize() const override;
+    std::vector<uint32_t>::const_iterator deserialize(std::vector<uint32_t>::const_iterator begin,
+                                                     std::vector<uint32_t>::const_iterator end) override;
 
 #ifdef USE_PYTHON
     py::dict getMetricDict() override;
