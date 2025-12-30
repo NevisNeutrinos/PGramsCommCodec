@@ -15,17 +15,7 @@ if (USE_PYTHON)
 endif ()
 
 # Define our C++ library source files
-set(LIB_SOURCES
-        src/histogram.cpp
-        src/tpc_monitor.cpp
-        src/tpc_monitor_lbw.cpp
-        src/tpc_configs.cpp
-        src/tpc_monitor_query.cpp
-        src/daq_comp_monitor.cpp
-        src/tpc_readout_monitor.cpp
-        src/tpc_monitor_charge_event.cpp
-        src/tpc_monitor_light_event.cpp
-)
+file(GLOB LIB_SOURCES src/*.cpp)
 
 # Create a static library for our core C++ code.
 # This avoids compiling the same code twice.

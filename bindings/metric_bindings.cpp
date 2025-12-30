@@ -13,7 +13,7 @@
 #include "../include/tpc_readout_monitor.h"
 #include "../include/tpc_monitor_charge_event.h"
 #include "../include/tpc_monitor_light_event.h"
-#include "../include/communication_codes.h"
+#include "CommunicationCodes.hh"
 
 namespace py = pybind11;
 

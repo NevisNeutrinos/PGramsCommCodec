@@ -5,13 +5,13 @@
 #ifndef METRIC_BASE_H
 #define METRIC_BASE_H
 
-#include <communication_codes.h>
 #include <iostream>
 #include <vector>
 #include <cstdint>
-#include <limits.h>
+#include <climits>
 #include <tuple>
 #include <stdexcept>
+#include "CommunicationCodes.hh"
 #include "constants.h"
 
 #ifdef USE_PYTHON
