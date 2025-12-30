@@ -21,7 +21,11 @@ namespace constants {
         constexpr uint16_t COSMIC_DISC_ID = 0x1;
         constexpr uint16_t BEAM_GATE_DISC_ID = 0x4;
         // Expected number of channels and samples per channel for charge & light
+        // prefix "TOTAL" is the number of channels on the hardware
+        // prefix "NUM" is number of used channels, currently 180 for charge and 36 for light
+        constexpr size_t TOTAL_CHARGE_CHANNELS = 192;
         constexpr size_t NUM_CHARGE_CHANNELS = 192;
+        constexpr size_t TOTAL_LIGHT_CHANNELS = 40;
         constexpr size_t NUM_LIGHT_CHANNELS = 36;
         constexpr size_t NUM_CHARGE_SAMPLES = 763;
         constexpr size_t CHARGE_ONE_FRAME = 256;

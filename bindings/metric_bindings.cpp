@@ -78,6 +78,7 @@ PYBIND11_MODULE(datamon, m) {
         .value("OrcPcieInit", pgrams::communication::CommunicationCodes::ORC_Init_PCIe_Driver)
         .value("OrcBootMonitor", pgrams::communication::CommunicationCodes::ORC_Boot_Monitor)
         .value("OrcShutdownMonitor", pgrams::communication::CommunicationCodes::ORC_Shutdown_Monitor)
+        .value("OrcHardwareStatus", pgrams::communication::CommunicationCodes::ORC_Hardware_Status)
         .value("OrcBootTof", pgrams::communication::CommunicationCodes::ORC_Boot_Tof_Daq)
         .value("OrcShutdownTof", pgrams::communication::CommunicationCodes::ORC_Shutdown_Tof_Daq)
 

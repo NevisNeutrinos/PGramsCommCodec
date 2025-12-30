@@ -61,6 +61,8 @@ enum class CommunicationCodes : uint16_t {
   ORC_Shutdown_Monitor = construct_code(0x8, COM_SUBSYSTEM_ORC_MSK),
   ORC_Boot_Tof_Daq = construct_code(0x9, COM_SUBSYSTEM_ORC_MSK),
   ORC_Shutdown_Tof_Daq = construct_code(0x10, COM_SUBSYSTEM_ORC_MSK),
+  // Status Link
+  ORC_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_ORC_MSK),
 
   //Columbia Readout
   // Command Link
