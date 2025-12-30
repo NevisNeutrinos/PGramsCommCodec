@@ -20,6 +20,7 @@ TpcConfigs::TpcConfigs()
       num_roi_words_(30),
       roi_deadtime_(240),
       fifo_blocksize_(0xFFFF),
+      drift_size_(0),
       trigger_source_(1),
       software_trigger_rate_hz_(50),
       tpc_dead_time_(0x10),
@@ -48,6 +49,7 @@ void TpcConfigs::clear() {
     num_roi_words_ = 0;
     roi_deadtime_ = 0;
     fifo_blocksize_ = 0xFFFF;
+    drift_size_ = 0;
     trigger_source_ = 1;
     software_trigger_rate_hz_ = 50;
     tpc_dead_time_ = 0x10;
@@ -125,6 +127,7 @@ py::dict TpcConfigs::getMetricDict() {
     metric_dict["num_roi_words"] = num_roi_words_;
     metric_dict["roi_deadtime"] = roi_deadtime_;
     metric_dict["fifo_blocksize"] = fifo_blocksize_;
+    metric_dict["drift_size"] = drift_size_;
     metric_dict["trigger_source"] = trigger_source_;
     metric_dict["software_trigger_rate_hz"] = software_trigger_rate_hz_;
     metric_dict["tpc_dead_time"] = tpc_dead_time_;
@@ -151,6 +154,7 @@ void TpcConfigs::setMetricDict(py::dict &config) {
     AssignScalar(num_roi_words_, config, "num_roi_words");
     AssignScalar(roi_deadtime_, config, "roi_deadtime");
     AssignScalar(fifo_blocksize_, config, "fifo_blocksize");
+    AssignScalar(drift_size_, config, "drift_size");
     AssignScalar(trigger_source_, config, "trigger_source");
     AssignScalar(software_trigger_rate_hz_, config, "software_trigger_rate_hz");
     AssignScalar(tpc_dead_time_, config, "tpc_dead_time");
@@ -177,6 +181,7 @@ void TpcConfigs::print() const {
     std::cout << "  num_roi_words: " << num_roi_words_ << std::endl;
     std::cout << "  roi_deadtime: " << roi_deadtime_ << std::endl;
     std::cout << "  fifo_blocksize: " << fifo_blocksize_ << std::endl;
+    std::cout << "  drift_size: " << drift_size_ << std::endl;
     std::cout << "  trigger_source: " << trigger_source_ << std::endl;
     std::cout << "  software_trigger_rate_hz: " << software_trigger_rate_hz_ << std::endl;
     std::cout << "  tpc_dead_time: " << tpc_dead_time_ << std::endl;

@@ -34,6 +34,9 @@ private:
     uint32_t roi_deadtime_ = 240;    // The number of samples after the ROI which are an enforced deadtime
     uint32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
 
+    // Drift size
+    uint32_t drift_size_;
+
     // Trigger parameters
     uint32_t trigger_source_;
     uint32_t software_trigger_rate_hz_;
@@ -62,16 +65,16 @@ private:
         return std::tie(summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
-        roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
-        tpc_dead_time_, light_trig_prescale_);
+        roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
+        software_trigger_rate_hz_,tpc_dead_time_, light_trig_prescale_);
     };
 
     auto member_tuple() const {
         return std::tie(summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
-        roi_deadtime_, fifo_blocksize_, trigger_source_, software_trigger_rate_hz_,
-        tpc_dead_time_, light_trig_prescale_);
+        roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
+        software_trigger_rate_hz_, tpc_dead_time_, light_trig_prescale_);
     };
 
 public:
@@ -86,7 +89,7 @@ public:
                                                      std::vector<uint32_t>::const_iterator end) override;
 
     // Helper for trigger selection
-    std::string toTriggerSourceString(int code) {
+    std::string toTriggerSourceString(uint32_t code) {
         switch (code) {
             case 0: return "light";
             case 1: return "software";
@@ -191,6 +194,9 @@ public:
 
     uint32_t getFifoBlocksize() const { return fifo_blocksize_; }
     void setFifoBlocksize(uint32_t v) { fifo_blocksize_ = v; }
+
+    uint32_t getDriftSize() const { return drift_size_; }
+    void setDriftSize(uint32_t v) { drift_size_ = v; }
 
     uint32_t getTriggerSource() const { return trigger_source_; }
     void setTriggerSource(uint32_t v) { trigger_source_ = v; }
