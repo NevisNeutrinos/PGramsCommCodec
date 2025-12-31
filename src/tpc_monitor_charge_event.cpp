@@ -4,12 +4,14 @@
 
 #include "tpc_monitor_charge_event.h"
 
-TpcMonitorChargeEvent::TpcMonitorChargeEvent() : channel_number_(0) {
-    std::fill(charge_samples_.begin(), charge_samples_.end(), 0);
+TpcMonitorChargeEvent::TpcMonitorChargeEvent() : channel_number_(0), num_samples_(0) {
+    // Don't know the size of the light samples yet so we can't initialize it
 }
 
 void TpcMonitorChargeEvent::clear() {
     channel_number_ = 0;
+    num_samples_ = 0;
+    // Repeated calls will be more efficient if we preserve the vector size. Hence, the choice of fill() over clear()
     std::fill(charge_samples_.begin(), charge_samples_.end(), 0);
 }
 
@@ -32,13 +34,14 @@ std::vector<uint32_t>::const_iterator TpcMonitorChargeEvent::deserialize(std::ve
     it = Serializer<TpcMonitorChargeEvent>::deserialize_tuple(member_tuple(), begin, end);
 
     // Ensure there's enough data for the bins
-    if (static_cast<size_t>(std::distance(it, end)) < charge_samples_.size()) {
-        throw std::runtime_error("Deserialization failed: not enough data for ONE_FRAME_CHARGE_SAMPLES");
+    if (static_cast<size_t>(std::distance(it, end)) < num_samples_) {
+        throw std::runtime_error("Deserialization failed: not enough data for num_samples");
     }
 
     // Copy num charge samples data
-    std::copy(it, it + charge_samples_.size(), charge_samples_.begin());
-    it += charge_samples_.size();
+    charge_samples_.resize(num_samples_);
+    std::copy(it, it + num_samples_, charge_samples_.begin());
+    it += num_samples_;
 
     return it;
 }
@@ -57,6 +60,7 @@ py::dict TpcMonitorChargeEvent::getMetricDict() {
 void TpcMonitorChargeEvent::print() {
     std::cout << "++++++++++++ TpcMonitorChargeEvent +++++++++++++" << std::endl;
     std::cout << "  Channel: " << channel_number_ << std::endl;
+    std::cout << "  Number of samples: " << num_samples_ << std::endl;
     std::cout << "  Charge Samples (first 10): ";
     auto tmp_vec = UnPackDoubleWords(charge_samples_);
     for (size_t i = 0; i < 10; ++i) {
