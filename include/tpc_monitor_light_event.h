@@ -14,16 +14,19 @@ class TpcMonitorLightEvent : public MetricBase {
 private:
 
     uint32_t channel_number_;
+    uint32_t run_number_;
+    uint32_t file_number_;
+    uint32_t evt_number_;
     uint32_t num_samples_;
     std::vector<uint32_t> light_samples_{};
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 2;
+    size_t num_members_ = 5;
     auto member_tuple() {
-        return std::tie(channel_number_, num_samples_);
+        return std::tie(channel_number_, run_number_, file_number_, evt_number_, num_samples_);
     };
     auto member_tuple() const {
-        return std::tie(channel_number_, num_samples_);
+        return std::tie(channel_number_, run_number_, file_number_, evt_number_, num_samples_);
     };
 
 public:
@@ -51,6 +54,9 @@ public:
     }
 
     void setChannelNumber(uint32_t channel_number) { channel_number_ = channel_number; }
+    void setRunNumber(uint32_t run_number) { run_number_ = run_number; }
+    void setFileNumber(uint32_t file_number) { file_number_ = file_number; }
+    void setEvtNumber(uint32_t evt_number) { evt_number_ = evt_number; }
     void setLightSamples(std::vector<uint32_t> &light_roi) {
         num_samples_ = (light_roi.size() + 1) / 2;
         light_samples_.resize(num_samples_);
@@ -59,6 +65,9 @@ public:
 
     // --- Getter Methods ---
     const uint32_t getChannelNumber() const { return channel_number_; }
+    const uint32_t getRunNumber() const { return run_number_; }
+    const uint32_t getFileNumber() const { return file_number_; }
+    const uint32_t getEvtNumber() const { return evt_number_; }
     const uint32_t getNumSamples() const { return num_samples_; }
     const std::vector<uint32_t>& getLightSamples() const { return light_samples_; }
 

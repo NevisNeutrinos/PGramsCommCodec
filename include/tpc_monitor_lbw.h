@@ -13,6 +13,9 @@ class LowBwTpcMonitor : public MetricBase {
 private:
     // Metrics
     uint32_t error_bit_word_;
+    uint32_t run_number_;
+    uint32_t file_number_;
+    uint32_t evt_number_;
     std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_baselines_;
     std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_rms_;
     std::array<uint32_t, DOUBLE_PACK_CHARGE_CH> charge_avg_num_hits_;
@@ -29,12 +32,12 @@ private:
     };
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 1;
+    size_t num_members_ = 4;
     auto member_tuple() {
-        return std::tie(error_bit_word_);
+        return std::tie(error_bit_word_, run_number_, file_number_, evt_number_);
     };
     auto member_tuple() const {
-        return std::tie(error_bit_word_);
+        return std::tie(error_bit_word_, run_number_, file_number_, evt_number_);
     };
 
 public:
@@ -99,6 +102,9 @@ public:
     }
 
     // Public setters for populating data
+    void setRunNumber(uint32_t run_number) { run_number_ = run_number; }
+    void setFileNumber(uint32_t file_number) { file_number_ = file_number; }
+    void setEvtNumber(uint32_t evt_number) { evt_number_ = evt_number; }
     void setChargeBaselines(std::array<uint32_t, NUM_CHARGE_CHANNELS> &baselines) {
         PackDoubleWords(baselines, charge_baselines_);
     }
@@ -119,6 +125,9 @@ public:
     }
 
     // --- Getter Methods ---
+    const uint32_t getRunNumber() const { return run_number_; }
+    const uint32_t getFileNumber() const { return file_number_; }
+    const uint32_t getEvtNumber() const { return evt_number_; }
     const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getChargeBaselines() const { return charge_baselines_; }
     const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getChargeRms() const { return charge_rms_; }
     const std::array<uint32_t, DOUBLE_PACK_CHARGE_CH>& getAvgNumHits() const { return charge_avg_num_hits_; }

@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <iostream>
 
-LowBwTpcMonitor::LowBwTpcMonitor() : error_bit_word_(0) {
+LowBwTpcMonitor::LowBwTpcMonitor() : error_bit_word_(0), run_number_(0), file_number_(0), evt_number_(0) {
     std::fill(charge_baselines_.begin(), charge_baselines_.end(), 0);
     std::fill(charge_rms_.begin(), charge_rms_.end(), 0);
     std::fill(charge_avg_num_hits_.begin(), charge_avg_num_hits_.end(), 0);
@@ -16,6 +16,9 @@ LowBwTpcMonitor::LowBwTpcMonitor() : error_bit_word_(0) {
 }
 
 void LowBwTpcMonitor::clear() {
+    run_number_ = 0;
+    file_number_ = 0;
+    evt_number_ = 0;
     std::fill(charge_baselines_.begin(), charge_baselines_.end(), 0);
     std::fill(charge_rms_.begin(), charge_rms_.end(), 0);
     std::fill(charge_avg_num_hits_.begin(), charge_avg_num_hits_.end(), 0);
@@ -77,6 +80,9 @@ py::dict LowBwTpcMonitor::getMetricDict() {
 
     py::dict metric_dict;
     metric_dict["error_bit_word"] = error_bit_word_;
+    metric_dict["run_number"] = run_number_;
+    metric_dict["file_number"] = file_number_;
+    metric_dict["evt_number"] = evt_number_;
     // Charge channel metrics
     metric_dict["charge_baseline"] = vector_to_numpy_array_1d(UnPackDoubleWords(charge_baselines_));
     metric_dict["charge_rms"] = vector_to_numpy_array_1d(UnPackDoubleWords(charge_rms_));
@@ -93,6 +99,9 @@ py::dict LowBwTpcMonitor::getMetricDict() {
 void LowBwTpcMonitor::print() {
     std::cout << "++++++++++++ LowBwTpcMonitor +++++++++++++" << std::endl;
     std::cout << "  error_bit_word: " << error_bit_word_ << std::endl;
+    std::cout << "  run_number: " << run_number_ << std::endl;
+    std::cout << "  file_number: " << file_number_ << std::endl;
+    std::cout << "  evt_number: " << evt_number_ << std::endl;
     std::cout << "  Charge Baselines (first 10): ";
     auto tmp_vec = UnPackDoubleWords(charge_baselines_);
     print_vec(tmp_vec);

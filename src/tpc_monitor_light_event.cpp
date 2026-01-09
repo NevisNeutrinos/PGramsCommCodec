@@ -4,12 +4,16 @@
 
 #include "tpc_monitor_light_event.h"
 
-TpcMonitorLightEvent::TpcMonitorLightEvent() : channel_number_(0), num_samples_(0) {
+TpcMonitorLightEvent::TpcMonitorLightEvent() : channel_number_(0), run_number_(0), file_number_(0),
+                                               evt_number_(0), num_samples_(0) {
     // Don't know the size of the light samples yet so we can't initialize it
 }
 
 void TpcMonitorLightEvent::clear() {
     channel_number_ = 0;
+    run_number_ = 0;
+    file_number_ = 0;
+    evt_number_ = 0;
     num_samples_ = 0;
     // Repeated calls will be more efficient if we preserve the vector size. Hence, the choice of fill() over clear()
     std::fill(light_samples_.begin(), light_samples_.end(), 0);
@@ -51,6 +55,9 @@ py::dict TpcMonitorLightEvent::getMetricDict() {
 
     py::dict metric_dict;
     metric_dict["channel_number"] = channel_number_;
+    metric_dict["run_number"] = run_number_;
+    metric_dict["file_number"] = file_number_;
+    metric_dict["evt_number"] = evt_number_;
     metric_dict["light_samples"] = vector_to_numpy_array_1d(UnPackDoubleWords(light_samples_));
 
     return metric_dict;
@@ -60,6 +67,9 @@ py::dict TpcMonitorLightEvent::getMetricDict() {
 void TpcMonitorLightEvent::print() {
     std::cout << "++++++++++++ TpcMonitorLightEvent +++++++++++++" << std::endl;
     std::cout << "  Channel: " << channel_number_ << std::endl;
+    std::cout << "  run_number: " << run_number_ << std::endl;
+    std::cout << "  file_number: " << file_number_ << std::endl;
+    std::cout << "  evt_number: " << evt_number_ << std::endl;
     std::cout << "  Number of samples: " << num_samples_ << std::endl;
     std::cout << "  Light Samples (first 10): ";
     auto tmp_vec = UnPackDoubleWords(light_samples_);
