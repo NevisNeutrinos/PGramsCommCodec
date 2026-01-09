@@ -34,7 +34,7 @@ public:
 
     void PackDoubleWords(std::vector<uint32_t> &source_array, std::vector<uint32_t> &dest_array) {
         // Packing two 16b per 32b words with i+1 in upper and i in the lower bits
-        for (size_t i = 0; i < source_array.size(); i++) {
+        for (size_t i = 0; i < dest_array.size(); i++) {
             dest_array[i] = ((source_array[2 * i + 1]  & 0xFFFF) << 16) + (source_array[2 * i] & 0xFFFF);
         }
     }
