@@ -62,7 +62,6 @@ enum class CommunicationCodes : uint16_t {
   ORC_Boot_Tof_Daq = construct_code(0x9, COM_SUBSYSTEM_ORC_MSK),
   ORC_Shutdown_Tof_Daq = construct_code(0x10, COM_SUBSYSTEM_ORC_MSK),
   // Status Link
-  ORC_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_ORC_MSK),
 
   //Columbia Readout
   // Command Link
@@ -72,11 +71,9 @@ enum class CommunicationCodes : uint16_t {
   COL_Reset_Run = construct_code(0x3, COM_SUBSYSTEM_COL_MSK),
   COL_Boot_DAQ = construct_code(0x4, COM_SUBSYSTEM_COL_MSK),
   COL_Boot_Monitor = construct_code(0x5, COM_SUBSYSTEM_COL_MSK),
-  COL_Query_Hardware_Status = construct_code(0x6, COM_SUBSYSTEM_COL_MSK),
   COL_Query_LB_Data = construct_code(0x7, COM_SUBSYSTEM_COL_MSK),
   COL_Query_Event_Data = construct_code(0x8, COM_SUBSYSTEM_COL_MSK),
   // Status Link
-  COL_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_COL_MSK),
   COL_Callback = construct_code(0x21, COM_SUBSYSTEM_COL_MSK),
 
   // TOF
@@ -133,7 +130,15 @@ constexpr uint16_t to_u16(CommunicationCodes code) noexcept {
 
 enum class TelemetryCodes : uint16_t {
   HUB_Telemetry_Normal = 0x0,
+  ORC_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_ORC_MSK),
+  COL_Hardware_Status = construct_code(0x20, COM_SUBSYSTEM_COL_MSK),
+  COL_Query_Hardware_Status = construct_code(0x22, COM_SUBSYSTEM_COL_MSK)
 };
+
+constexpr uint16_t to_telem_u16(TelemetryCodes code) noexcept {
+  return static_cast<uint16_t>(code);
+}
+
 } // namespace pgrams::communication
 
 #endif //pGRAMS_CommunicationCodes_hh
