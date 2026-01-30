@@ -78,7 +78,6 @@ PYBIND11_MODULE(datamon, m) {
         .value("OrcPcieInit", pgrams::communication::CommunicationCodes::ORC_Init_PCIe_Driver)
         .value("OrcBootMonitor", pgrams::communication::CommunicationCodes::ORC_Boot_Monitor)
         .value("OrcShutdownMonitor", pgrams::communication::CommunicationCodes::ORC_Shutdown_Monitor)
-        .value("OrcHardwareStatus", pgrams::communication::CommunicationCodes::ORC_Hardware_Status)
         .value("OrcBootTof", pgrams::communication::CommunicationCodes::ORC_Boot_Tof_Daq)
         .value("OrcShutdownTof", pgrams::communication::CommunicationCodes::ORC_Shutdown_Tof_Daq)
 
@@ -87,10 +86,17 @@ PYBIND11_MODULE(datamon, m) {
         .value("ColStartRun", pgrams::communication::CommunicationCodes::COL_Start_Run)
         .value("ColStopRun", pgrams::communication::CommunicationCodes::COL_Stop_Run)
         .value("ColResetRun", pgrams::communication::CommunicationCodes::COL_Reset_Run)
-        .value("ColQueryHardwareStatus", pgrams::communication::CommunicationCodes::COL_Query_Hardware_Status)
-        .value("ColHardwareStatus", pgrams::communication::CommunicationCodes::COL_Hardware_Status)
         .value("ColQueryLBData", pgrams::communication::CommunicationCodes::COL_Query_LB_Data)
         .value("ColQueryEventData", pgrams::communication::CommunicationCodes::COL_Query_Event_Data)
+        .export_values();
+
+
+    py::enum_<pgrams::communication::TelemetryCodes>(m, "TelemCodes")
+        // Orchestrator
+        .value("OrcHardwareStatus", pgrams::communication::TelemetryCodes::ORC_Hardware_Status)
+        // TPC Readout
+        .value("ColHardwareStatus", pgrams::communication::TelemetryCodes::COL_Hardware_Status)
+        .value("ColQueryHardwareStatus", pgrams::communication::TelemetryCodes::COL_Query_Hardware_Status)
         .export_values();
 
     // Bind the Histogram class
