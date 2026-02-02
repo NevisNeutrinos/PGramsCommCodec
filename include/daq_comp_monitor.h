@@ -81,11 +81,11 @@ public:
 
     // Set Error or DAQ process bit words
     void setDaqBitWord(DaqRunningBits daq_bit, bool unset=false) { setBitWord(daq_bit_word_, to_underlying(daq_bit), unset); }
-    void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(daq_bit_word_, to_underlying(error_bit), unset); }
+    void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
 
     // --- Getter Methods ---
     // Public setters for populating data
-    uint32_t getFullErrorBitWord() const { return daq_bit_word_; }
+    uint32_t getFullErrorBitWord() const { return error_bit_word_; }
     uint32_t getLastCommand() const { return last_command_; }
     uint32_t getLastCommandStatus() const { return last_command_status_; }
     uint32_t getFullDaqBitWord() const { return daq_bit_word_; }
