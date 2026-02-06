@@ -82,12 +82,12 @@ PYBIND11_MODULE(datamon, m) {
         .value("OrcShutdownTof", pgrams::communication::CommunicationCodes::ORC_Shutdown_Tof_Daq)
 
         // TPC Readout
-        .value("ColConfigure", pgrams::communication::CommunicationCodes::COL_Configure)
-        .value("ColStartRun", pgrams::communication::CommunicationCodes::COL_Start_Run)
-        .value("ColStopRun", pgrams::communication::CommunicationCodes::COL_Stop_Run)
-        .value("ColResetRun", pgrams::communication::CommunicationCodes::COL_Reset_Run)
-        .value("ColQueryLBData", pgrams::communication::CommunicationCodes::COL_Query_LB_Data)
-        .value("ColQueryEventData", pgrams::communication::CommunicationCodes::COL_Query_Event_Data)
+        .value("ColConfigure", pgrams::communication::CommunicationCodes::TPC_Configure)
+        .value("ColStartRun", pgrams::communication::CommunicationCodes::TPC_Start_Run)
+        .value("ColStopRun", pgrams::communication::CommunicationCodes::TPC_Stop_Run)
+        .value("ColResetRun", pgrams::communication::CommunicationCodes::TPC_Reset_Run)
+        .value("ColQueryLBData", pgrams::communication::CommunicationCodes::TPCMonitor_Query_LB_Data)
+        .value("ColQueryEventData", pgrams::communication::CommunicationCodes::TPCMonitor_Query_Event_Data)
         .export_values();
 
 
@@ -95,8 +95,8 @@ PYBIND11_MODULE(datamon, m) {
         // Orchestrator
         .value("OrcHardwareStatus", pgrams::communication::TelemetryCodes::ORC_Hardware_Status)
         // TPC Readout
-        .value("ColHardwareStatus", pgrams::communication::TelemetryCodes::COL_Hardware_Status)
-        .value("ColQueryHardwareStatus", pgrams::communication::TelemetryCodes::COL_Query_Hardware_Status)
+        .value("ColHardwareStatus", pgrams::communication::TelemetryCodes::TPC_Hardware_Status)
+        .value("ColQueryHardwareStatus", pgrams::communication::TelemetryCodes::TPC_Query_Hardware_Status)
         .export_values();
 
     // Bind the Histogram class
