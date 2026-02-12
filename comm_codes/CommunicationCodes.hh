@@ -22,6 +22,7 @@ constexpr uint16_t COM_SUBSYSTEM_ORC_MSK = 0x3000;
 constexpr uint16_t COM_SUBSYSTEM_TPC_MSK = 0x4000; // Columbia readout
 constexpr uint16_t COM_SUBSYSTEM_TOF_MSK = 0x5000;
 constexpr uint16_t COM_SUBSYSTEM_TOF_BIAS_MSK = 0x6000;
+constexpr uint16_t COM_SUBSYSTEM_TPCMonitor_MSK = 0x8000; // TPC Monitor
 constexpr uint16_t COM_SUBSYSTEM_MSK = 0xF000; // Mask for all subsystems
 
 enum class CommunicationCodes : uint16_t {
@@ -72,8 +73,10 @@ enum class CommunicationCodes : uint16_t {
   TPC_Reset_Run = construct_code(0x3, COM_SUBSYSTEM_TPC_MSK),
   TPC_Boot_DAQ = construct_code(0x4, COM_SUBSYSTEM_TPC_MSK),
   TPC_Boot_Monitor = construct_code(0x5, COM_SUBSYSTEM_TPC_MSK),
-  TPC_Query_LB_Data = construct_code(0x7, COM_SUBSYSTEM_TPC_MSK),
-  TPC_Query_Event_Data = construct_code(0x8, COM_SUBSYSTEM_TPC_MSK),
+
+  // TPC Data Monitor
+  TPCMonitor_Query_LB_Data = construct_code(0x7, COM_SUBSYSTEM_TPCMonitor_MSK),
+  TPCMonitor_Query_Event_Data = construct_code(0x8, COM_SUBSYSTEM_TPCMonitor_MSK),
   // Status Link
   TPC_Callback = construct_code(0x21, COM_SUBSYSTEM_TPC_MSK),
 
@@ -100,9 +103,7 @@ enum class CommunicationCodes : uint16_t {
   TOF_Run_Process_QDC_Calibration = construct_code(0x202, COM_SUBSYSTEM_TOF_MSK),
   TOF_Run_Convert_Raw_To_Raw = construct_code(0x203, COM_SUBSYSTEM_TOF_MSK),
   TOF_Run_Convert_Raw_To_Singles = construct_code(0x204, COM_SUBSYSTEM_TOF_MSK),
-  //TOF_Run_Process_TOF_Coin_Evt_QA = construct_code(0x205, COM_SUBSYSTEM_TOF_MSK),
-  TOF_Run_Convert_Stg1_To_Stg2 = construct_code(0x300, COM_SUBSYSTEM_TOF_MSK),
-  TOF_Run_Process_TOF_Coin_Evt_QA = construct_code(0x301, COM_SUBSYSTEM_TOF_MSK),
+  TOF_Run_Process_TOF_Coin_Evt_QA = construct_code(0x205, COM_SUBSYSTEM_TOF_MSK),
 
   TOF_ACK = construct_code(0xFFF, COM_SUBSYSTEM_TOF_MSK),
   TOF_Callback = construct_code(0xFFE, COM_SUBSYSTEM_TOF_MSK),
