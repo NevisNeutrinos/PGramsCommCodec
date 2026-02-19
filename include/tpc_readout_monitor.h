@@ -91,7 +91,8 @@ public:
         lightfem_get_config = 9,
         chargefem_get_config = 10,
         trigger_get_config = 11,
-        datahandler_get_config = 12
+        datahandler_get_config = 12,
+        acquire_pcie_dma_buff = 13
     };
 
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
