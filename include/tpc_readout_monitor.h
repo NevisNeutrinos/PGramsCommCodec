@@ -104,7 +104,9 @@ public:
         failed_write = 19,
         failed_locking_dma_buffers = 20,
         trigger_file_open_error = 21,
-        pps_file_open_error = 22
+        pps_file_open_error = 22,
+        disk_full = 23,
+        disk_failover = 24
     };
 
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
