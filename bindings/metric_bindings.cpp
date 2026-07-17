@@ -88,6 +88,8 @@ PYBIND11_MODULE(datamon, m) {
         .value("ColResetRun", pgrams::communication::CommunicationCodes::TPC_Reset_Run)
         .value("ColQueryLBData", pgrams::communication::CommunicationCodes::TPCMonitor_Query_LB_Data)
         .value("ColQueryEventData", pgrams::communication::CommunicationCodes::TPCMonitor_Query_Event_Data)
+        .value("ColStartContinuousLBW", pgrams::communication::CommunicationCodes::TPCMonitor_Start_Continuous_LBW)
+        .value("ColStopContinuousLBW", pgrams::communication::CommunicationCodes::TPCMonitor_Stop_Continuous_LBW)
         .export_values();
 
 
