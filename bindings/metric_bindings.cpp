@@ -13,6 +13,8 @@
 #include "../include/tpc_readout_monitor.h"
 #include "../include/tpc_monitor_charge_event.h"
 #include "../include/tpc_monitor_light_event.h"
+#include "../include/tpc_monitor_fem_header.h"
+#include "../include/tpc_monitor_full_event_complete.h"
 #include "CommunicationCodes.hh"
 
 namespace py = pybind11;
@@ -90,6 +92,7 @@ PYBIND11_MODULE(datamon, m) {
         .value("ColQueryEventData", pgrams::communication::CommunicationCodes::TPCMonitor_Query_Event_Data)
         .value("ColStartContinuousLBW", pgrams::communication::CommunicationCodes::TPCMonitor_Start_Continuous_LBW)
         .value("ColStopContinuousLBW", pgrams::communication::CommunicationCodes::TPCMonitor_Stop_Continuous_LBW)
+        .value("ColSendFullEventData", pgrams::communication::CommunicationCodes::TPCMonitor_Send_Full_Event_Data)
         .export_values();
 
 
@@ -143,6 +146,16 @@ PYBIND11_MODULE(datamon, m) {
         .def(py::init<>())
         .def("clear", &TpcMonitorLightEvent::clear)
         .def("serialize", &TpcMonitorLightEvent::serialize);
+
+    py::class_<TpcMonitorFemHeader, MetricBase>(m, "TpcMonitorFemHeader")
+        .def(py::init<>())
+        .def("clear", &TpcMonitorFemHeader::clear)
+        .def("serialize", &TpcMonitorFemHeader::serialize);
+
+    py::class_<TpcMonitorFullEventComplete, MetricBase>(m, "TpcMonitorFullEventComplete")
+        .def(py::init<>())
+        .def("clear", &TpcMonitorFullEventComplete::clear)
+        .def("serialize", &TpcMonitorFullEventComplete::serialize);
 
     // Bind the TpcConfigs class
     py::class_<TpcConfigs, MetricBase>(m, "TpcConfig")

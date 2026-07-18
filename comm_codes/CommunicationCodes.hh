@@ -79,6 +79,7 @@ enum class CommunicationCodes : uint16_t {
   TPCMonitor_Query_Event_Data = construct_code(0x8, COM_SUBSYSTEM_TPCMonitor_MSK),
   TPCMonitor_Start_Continuous_LBW = construct_code(0x9, COM_SUBSYSTEM_TPCMonitor_MSK),
   TPCMonitor_Stop_Continuous_LBW = construct_code(0xA, COM_SUBSYSTEM_TPCMonitor_MSK),
+  TPCMonitor_Send_Full_Event_Data = construct_code(0xB, COM_SUBSYSTEM_TPCMonitor_MSK),
   // Status Link
   TPC_Callback = construct_code(0x21, COM_SUBSYSTEM_TPC_MSK),
 

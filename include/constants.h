@@ -32,6 +32,10 @@ namespace constants {
         constexpr size_t NUM_LIGHT_SAMPLES = 208;
         constexpr size_t CHARGE_START_SAMPLES = 256;
         constexpr size_t CHARGE_END_SAMPLES = 512;
+        // Full-event telemetry: 2nd 256-sample frame [256,512) plus 8 samples on each side.
+        constexpr size_t FULL_EVENT_CHARGE_START = 248;
+        constexpr size_t FULL_EVENT_CHARGE_END = 520;
+        constexpr size_t FULL_EVENT_CHARGE_SAMPLES = FULL_EVENT_CHARGE_END - FULL_EVENT_CHARGE_START;
         // Since the ADC words are 12b we can pack 2 per 32b word
         constexpr double packed_words_divisor_ = 0.5;
         constexpr size_t DOUBLE_PACK_CHARGE_CH = packed_words_divisor_ * NUM_CHARGE_CHANNELS;
