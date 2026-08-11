@@ -15,6 +15,8 @@ public:
         kFileNotFound = 1,
         kEventNotFound = 2,
         kLlagEventNotFound = 3,
+        // Exact L_lag match failed; payload still sent using the closest lag.
+        kLlagUsedClosest = 4,
     };
 
 private:
