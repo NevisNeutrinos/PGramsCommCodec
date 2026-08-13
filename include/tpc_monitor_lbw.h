@@ -23,14 +23,6 @@ private:
     std::array<uint32_t, DOUBLE_PACK_LIGHT_CH> light_rms_;
     std::array<uint32_t, DOUBLE_PACK_LIGHT_CH> light_avg_num_rois_;
 
-    // Assign errors to the bits in the error word
-    enum ErrorBits : uint32_t {
-        checksum = 1,
-        fem_count = 2,
-        charge_samples = 3,
-        light_samples = 4
-    };
-
     // Implement  the serialize/deserialize
     size_t num_members_ = 4;
     auto member_tuple() {
@@ -41,6 +33,16 @@ private:
     };
 
 public:
+    // Assign errors to the bits in the error word
+    enum ErrorBits : uint32_t {
+        checksum = 1,
+        fem_count = 2,
+        charge_samples = 3,
+        light_samples = 4,
+        // Requested run/file missing, or file is still the live (unclosed) segment.
+        file_not_closed = 5,
+    };
+
     LowBwTpcMonitor();
 
     // Helper to set the error word bits
@@ -53,11 +55,13 @@ public:
         uint32_t fem_count;
         uint32_t charge_samples;
         uint32_t light_samples;
+        uint32_t file_not_closed;
         ErrorWord(uint32_t word) {
             checksum = LowBwTpcMonitor::getErrorBitWord(word, ErrorBits::checksum);
             fem_count = LowBwTpcMonitor::getErrorBitWord(word, ErrorBits::fem_count);
             charge_samples = LowBwTpcMonitor::getErrorBitWord(word, ErrorBits::charge_samples);
             light_samples = LowBwTpcMonitor::getErrorBitWord(word, ErrorBits::light_samples);
+            file_not_closed = LowBwTpcMonitor::getErrorBitWord(word, ErrorBits::file_not_closed);
         }
     };
 
