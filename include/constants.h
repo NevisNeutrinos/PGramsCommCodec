@@ -6,6 +6,7 @@
 #define CONSTANTS_H
 
 #include <cstddef>
+#include <cstdint>
 
 namespace constants {
     namespace daq_computer {
@@ -36,6 +37,10 @@ namespace constants {
         constexpr size_t FULL_EVENT_CHARGE_START = 248;
         constexpr size_t FULL_EVENT_CHARGE_END = 520;
         constexpr size_t FULL_EVENT_CHARGE_SAMPLES = FULL_EVENT_CHARGE_END - FULL_EVENT_CHARGE_START;
+        // LBW 0x4001 fields are uint16. Ground divides by the same factors.
+        constexpr uint32_t LBW_BASELINE_SCALE = 10;
+        constexpr uint32_t LBW_RMS_SCALE = 100;
+        constexpr uint32_t LBW_HIT_SCALE = 10;
         // Since the ADC words are 12b we can pack 2 per 32b word
         constexpr double packed_words_divisor_ = 0.5;
         constexpr size_t DOUBLE_PACK_CHARGE_CH = packed_words_divisor_ * NUM_CHARGE_CHANNELS;

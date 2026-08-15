@@ -110,6 +110,7 @@ public:
     void setFileNumber(uint32_t file_number) { file_number_ = file_number; }
     void setEvtNumber(uint32_t evt_number) { evt_number_ = evt_number; }
     void setChargeBaselines(std::array<uint32_t, NUM_CHARGE_CHANNELS> &baselines) {
+        // Packed uint16: baseline×10, RMS×100, hits×10 (see LBW_*_SCALE).
         PackDoubleWords(baselines, charge_baselines_);
     }
     void setChargeRms(std::array<uint32_t, NUM_CHARGE_CHANNELS> &rms) {
