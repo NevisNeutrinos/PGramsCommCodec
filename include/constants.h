@@ -41,10 +41,13 @@ namespace constants {
         constexpr uint32_t LBW_BASELINE_SCALE = 10;
         constexpr uint32_t LBW_RMS_SCALE = 100;
         constexpr uint32_t LBW_HIT_SCALE = 10;
+        // Per-event decoder bits (ProcessEvents::EventErrorBit). Counts are uint16.
+        constexpr size_t NUM_EVENT_ERROR_BITS = 32;
         // Since the ADC words are 12b we can pack 2 per 32b word
         constexpr double packed_words_divisor_ = 0.5;
         constexpr size_t DOUBLE_PACK_CHARGE_CH = packed_words_divisor_ * NUM_CHARGE_CHANNELS;
         constexpr size_t DOUBLE_PACK_LIGHT_CH = packed_words_divisor_ * NUM_LIGHT_CHANNELS;
+        constexpr size_t DOUBLE_PACK_ERROR_BITS = packed_words_divisor_ * NUM_EVENT_ERROR_BITS;
         constexpr size_t DOUBLE_PACK_LIGHT_SAMPLE = packed_words_divisor_ * NUM_LIGHT_SAMPLES;
         constexpr size_t DOUBLE_PACK_CHARGE_ONE_FRAME = packed_words_divisor_ * CHARGE_ONE_FRAME;
 
