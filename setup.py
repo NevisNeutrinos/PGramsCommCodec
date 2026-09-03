@@ -14,7 +14,9 @@ sources = [
     'src/daq_comp_monitor.cpp',
     'src/tpc_readout_monitor.cpp',
     'src/tpc_monitor_charge_event.cpp',
-    'src/tpc_monitor_light_event.cpp'
+    'src/tpc_monitor_light_event.cpp',
+    'src/tpc_monitor_fem_header.cpp',
+    'src/tpc_monitor_full_event_complete.cpp',
 ]
 
 ext_modules = [
